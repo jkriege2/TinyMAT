@@ -26,3 +26,13 @@
 *.exe
 *.out
 *.app
+/test/*.mat
+/test/test_tinymatqt.pro
+/build-test_tinymatqt-Desktop_Qt_5_4_0_MinGW_32bit-Debug
+/test/*.d
+/test_qt/Makefile
+/test_qt/Makefile.Debug
+/test_qt/Makefile.Release
+*.mat
+*.d
+*.user
