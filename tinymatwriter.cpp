@@ -659,7 +659,7 @@ void TinyMATWriter_close(TinyMATWriterFile* mat) {
             }
         }
 
-        fpos_t endpos;
+        long endpos;
         endpos=ftell(mat->file);
         fseek(mat->file, sizepos, SEEK_SET);
         //fsetpos(mat->file, &sizepos);
