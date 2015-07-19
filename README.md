@@ -8,7 +8,7 @@ It is licensed under the terms of the GNU Lesser general Public license (LGPL) >
 # Example
 The following example code writes some arrays and matrices into a MAT-file:
 ```C++
-TinyMATWriterFile* mat=TinyMATWriter_open("test.mat");
+	TinyMATWriterFile* mat=TinyMATWriter_open("test.mat");
 	if (mat) {
 		double mat1[4]={1,2,3,4};
 		double vec1[8]={1,2,3,4,5,6,7,8};
