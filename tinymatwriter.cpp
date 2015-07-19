@@ -473,7 +473,7 @@ void TinyMATWriter_writeString(TinyMATWriterFile *mat, const char *name, const c
     TinyMAT_write32(mat->file, (uint32_t)TINYMAT_miINT32);
     TinyMAT_write32(mat->file, (uint32_t)8);
     TinyMAT_write32(mat->file, 1);
-    TinyMAT_write32(mat->file, slen);
+    TinyMAT_write32(mat->file, (uint32_t)slen);
 
     // write field name
     TinyMAT_writeDatElement_string(mat->file, name);
@@ -605,8 +605,8 @@ void TinyMATWriter_close(TinyMATWriterFile* mat) {
 
         // write tag header
         TinyMAT_write32(mat->file, (uint32_t)TINYMAT_miMATRIX);
-        fpos_t sizepos;
-        fgetpos(mat->file, &sizepos);
+        long sizepos;
+        sizepos=ftell(mat->file);
         TinyMAT_write32(mat->file, size_bytes);
 
         // write arrayflags
@@ -630,7 +630,7 @@ void TinyMATWriter_close(TinyMATWriterFile* mat) {
                 }
                 if (v.type()==QVariant::String) {
                     QByteArray a=v.toString().toLatin1();
-                    std::cout<<i<<" "<<j<<" "<<a.toStdString()<<"\n";
+                    std::cout<<i<<" "<<j<<" "<<QString(a).toStdString()<<"\n";
                     TinyMATWriter_writeString(mat, "", a.data(), a.size());
                 } else if (v.canConvert(QVariant::Double)) {
                     double a=v.toDouble();
@@ -660,13 +660,13 @@ void TinyMATWriter_close(TinyMATWriterFile* mat) {
         }
 
         fpos_t endpos;
-        fgetpos(mat->file, &endpos);
-        //fseek(mat->file, sizepos, SEEK_SET);
-        fsetpos(mat->file, &sizepos);
+        endpos=ftell(mat->file);
+        fseek(mat->file, sizepos, SEEK_SET);
+        //fsetpos(mat->file, &sizepos);
         size_bytes=endpos-sizepos-4;
         TinyMAT_write32(mat->file, size_bytes);
-        //fseek(mat->file, endpos, SEEK_SET);
-        fsetpos(mat->file, &endpos);
+        fseek(mat->file, endpos, SEEK_SET);
+        //fsetpos(mat->file, &endpos);
         std::cout<<endpos<<" "<<ftell(mat->file)<<"\n";
     }
 
