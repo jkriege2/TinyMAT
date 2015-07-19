@@ -27,11 +27,7 @@
 #    define TINYMATWRITER_LIB_EXPORT
 #endif
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <inttypes.h>
-#include <string>
 
 #ifdef TINYMAT_USES_QVARIANT
 #  include <QVariant>
@@ -128,7 +124,7 @@ TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeString(TinyMATWriterFile* mat, 
     \param slen length of the string in bytes
 
   */
-TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeString(TinyMATWriterFile* mat, const char* name, const char* data, size_t slen);
+TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeString(TinyMATWriterFile* mat, const char* name, const char* data, uint32_t slen);
 
 /*! \brief write a 2-dimensional matrix in row-major order into a MAT-file
     \ingroup tinymatwriter

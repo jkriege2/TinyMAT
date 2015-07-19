@@ -56,12 +56,12 @@ int main( int /*argc*/, const char* /*argv*/[] ) {
         }
         {
             QList<QVariant> tmp;
-            tmp<<"blub"<<"blub"<<"blub"<<"blubbbbbbb"<<"a";
+            tmp<<"blub"<<"blub"<<"blub"<<"blubbbbbbb";
             varmat<<tmp;
         }
-        //TinyMATWriter_writeString(mat, "string1", "teststring1data blabla");
-        //TinyMATWriter_writeQVariantList(mat, "vlist1", varlist);
-        TinyMATWriter_writeQVariantMatrix(mat, "vmat1", varmat);
+        TinyMATWriter_writeString(mat, "string1", "teststring1data blabla");
+        TinyMATWriter_writeQVariantList(mat, "vlist1", varlist);
+        TinyMATWriter_writeQVariantMatrix(mat, "vmatrix1", varmat);
         TinyMATWriter_close(mat);
 	}
     return 0;
