@@ -57,11 +57,20 @@ int main( int /*argc*/, const char* /*argv*/[] ) {
         {
             QList<QVariant> tmp;
             tmp<<"blub"<<"blub"<<"blub"<<"blubbbbbbb";
+            tmp.append(QVariant(tmp));
             varmat<<tmp;
         }
+        QVariantMap smap;
+        smap["x"]=1.23;
+        smap["y"]=4.56;
+        smap["z"]=43;
+        smap["str"]="hello World!";
+        //smap["varlist"]=varlist;
+        smap["smap"]=smap;
         TinyMATWriter_writeString(mat, "string1", "teststring1data blabla");
         TinyMATWriter_writeQVariantList(mat, "vlist1", varlist);
         TinyMATWriter_writeQVariantMatrix(mat, "vmatrix1", varmat);
+        TinyMATWriter_writeQVariantMap(mat, "vmap1", smap);
         TinyMATWriter_close(mat);
 	}
     return 0;

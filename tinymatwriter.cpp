@@ -236,6 +236,12 @@ TINYMAT_inlineattrib static void TinyMAT_writeDatElement_i32(TinyMATWriterFile* 
 	TinyMAT_write32(mat, (uint32_t)0); // write padding
 }
 
+TINYMAT_inlineattrib static void TinyMAT_writeDatElementS_i32(TinyMATWriterFile* mat, int32_t data) {
+    TinyMAT_write16(mat, (uint16_t)TINYMAT_miINT32);
+    TinyMAT_write16(mat, (uint16_t)4);
+    TinyMAT_write32(mat, data);
+}
+
 TINYMAT_inlineattrib static void TinyMAT_writeDatElement_u16(TinyMATWriterFile* mat, uint16_t data) {
 	TinyMAT_write32(mat, (uint32_t)TINYMAT_miUINT16);
 	TinyMAT_write32(mat, (uint32_t)2);
@@ -294,41 +300,27 @@ TINYMAT_inlineattrib static void TinyMAT_writeDatElement_u32a(TinyMATWriterFile*
     }
 }
 
-TINYMAT_inlineattrib static void TinyMAT_writeDatElement_stringas8bit(TinyMATWriterFile* mat, const char* data, uint32_t slen) {
-    //long spos=ftell(mat);
+
+TINYMAT_inlineattrib static void TinyMAT_writeDatElement_i8a(TinyMATWriterFile* mat, const int8_t* data, uint32_t slen) {
     size_t pad=(slen)%8;
     uint32_t cla=TINYMAT_miINT8;
     TinyMAT_write32(mat, cla);
     TinyMAT_write32(mat, slen);
-    //if (slen>0) std::cout<<"TinyMAT_writeDatElement_stringas8bit() str="<<(char*)tmp<<"  slen="<<slen<<"  pad="<<pad<<"  spos="<<spos<<"\n";
     if (slen>0 && data) {
         TinyMAT_fwrite(data, 1, slen, mat);
-        // write padding
         size_t pc=0;
         if (pad>0) {
             for (size_t i=pad; i<8; i++) {
                 TinyMAT_write8(mat, (uint8_t)0);
                 pc++;
-                //std::cout<<"   writePAD "<<i<<"/"<<pad<<" "<<ftell(mat)<<"\n";
             }
 
         }
-//        if (TinyMAT_ftell(mat)!=long(spos+8+slen+pc)) {
-//            TinyMAT_fseek(mat, spos+8+slen+pc,SEEK_SET);
-//            std::cout<<"   seek"<< spos+8+slen+pc<<" "<<slen<<" "<<pc<<"\n";
-//        }
-
-    } else {
-//        if (TinyMAT_ftell(mat)!=spos+8) {
-//            TinyMAT_fseek(mat, spos+8,SEEK_SET);
-//            std::cout<<"   seek"<< spos+8<<"\n";
-//        }
-
     }
-    //if (data) free(data);
+}
 
-    //std::cout<<"  TinyMAT_writeDatElement_stringas8bit() slen="<<slen<<"  pad="<<pad<<"  spos="<<spos<<"  ftell="<<ftell(mat)<<"\n";
-
+TINYMAT_inlineattrib static void TinyMAT_writeDatElement_stringas8bit(TinyMATWriterFile* mat, const char* data, uint32_t slen) {
+    TinyMAT_writeDatElement_i8a(mat, (const int8_t*)data, slen);
 }
 
 TINYMAT_inlineattrib static void TinyMAT_writeDatElement_string(TinyMATWriterFile* mat, const char* data, uint32_t slen) {
@@ -472,6 +464,7 @@ TinyMATWriterFile* TinyMATWriter_open(const char* filename, const char* descript
 #define TINYMAT_mxDOUBLE_CLASS_arrayflags 0x00000006
 #define TINYMAT_mxCHAR_CLASS_CLASS_arrayflags 0x00000004
 #define TINYMAT_mxCELL_CLASS_arrayflags 0x00000001
+#define TINYMAT_mxSTRUCT_CLASS_arrayflags 0x00000002
 
 void TinyMATWriter_writeMatrix2D_colmajor(TinyMATWriterFile* mat, const char* name, const double* data_real, int32_t cols, int32_t rows) {
 	uint32_t size_bytes=0;
@@ -622,6 +615,14 @@ void TinyMATWriter_close(TinyMATWriterFile* mat) {
             if (data[i].type()==QVariant::String) {
                 QByteArray a=data[i].toString().toLatin1();
                 TinyMATWriter_writeString(mat, "", a.data(), a.size());
+            } else if (data[i].type()==QVariant::Map) {
+                QVariantMap a=data[i].toMap();
+                TinyMATWriter_writeQVariantMap(mat, "", a);
+            } else if (data[i].type()==QVariant::List) {
+                QVariantList a=data[i].toList();
+                //std::cout<<i<<" "<<j<<" "<<QString(a).toStdString()<<"  length="<<a.size()<<"\n";
+                TinyMATWriter_writeQVariantList(mat, "", a);
+
             } else if (data[i].canConvert(QVariant::Double)) {
                 double a=data[i].toDouble();
                 TinyMATWriter_writeMatrix2D_colmajor(mat, "", &a, 1, 1);
@@ -697,6 +698,14 @@ void TinyMATWriter_close(TinyMATWriterFile* mat) {
                     QByteArray a=v.toString().toLatin1();
                     //std::cout<<i<<" "<<j<<" "<<QString(a).toStdString()<<"  length="<<a.size()<<"\n";
                     TinyMATWriter_writeString(mat, "", a.data(), a.size());
+                } else if (v.type()==QVariant::Map) {
+                    QVariantMap a=v.toMap();
+                    TinyMATWriter_writeQVariantMap(mat, "", a);
+
+                } else if (v.type()==QVariant::List) {
+                    QVariantList a=v.toList();
+                    //std::cout<<i<<" "<<j<<" "<<QString(a).toStdString()<<"  length="<<a.size()<<"\n";
+                    TinyMATWriter_writeQVariantList(mat, "", a);
                 } else if (v.canConvert(QVariant::Double)) {
                     double a=v.toDouble();
                     //std::cout<<i<<" "<<j<<" "<<a<<"\n";
@@ -733,6 +742,103 @@ void TinyMATWriter_close(TinyMATWriterFile* mat) {
        TinyMAT_fseek(mat, endpos, SEEK_SET);
         //fsetpos(mat->file, &endpos);
         //std::cout<<endpos<<" "<<TinyMAT_ftell(mat)<<"\n";
+    }
+
+
+
+
+    void TinyMATWriter_writeQVariantMap(TinyMATWriterFile *mat, const char *name, const QVariantMap &data)
+    {
+        uint32_t size_bytes=0;
+        uint32_t arrayflags[2]={TINYMAT_mxSTRUCT_CLASS_arrayflags, 0};
+        QVariantMap::ConstIterator i;
+        QList<QByteArray> names;
+        int32_t maxlen=0;
+        for (i = data.begin(); i != data.end(); ++i) {
+            QString ni=i.key();
+            QByteArray n=ni.toLocal8Bit();
+            n=n.left(31);
+            maxlen=qMax(maxlen, (int32_t)n.size());
+            names<<n;
+        }
+        if (maxlen<32) maxlen=32;
+        // pad all field names to maxlen
+        for (int ii=0; ii<names.size(); ii++) {
+            while (names[ii].size()<maxlen) {
+                names[ii].append('\0');
+            }
+        }
+
+
+
+        // write tag header
+        TinyMAT_write32(mat, (uint32_t)TINYMAT_miMATRIX);
+        long sizepos;
+        sizepos=TinyMAT_ftell(mat);
+        TinyMAT_write32(mat, size_bytes);
+
+        // write arrayflags
+        TinyMAT_writeDatElement_u32a(mat, arrayflags, 2);
+
+        // write field dimensions
+        TinyMAT_write32(mat, (uint32_t)TINYMAT_miINT32);
+        TinyMAT_write32(mat, (uint32_t)8);
+        TinyMAT_write32(mat, (int32_t)1);
+        TinyMAT_write32(mat, (int32_t)1);
+
+        // write struct name
+        TinyMAT_writeDatElement_stringas8bit(mat, name);
+
+        // write field name length
+        TinyMAT_writeDatElementS_i32(mat, maxlen);
+
+        // write field names
+        QByteArray joinednames=names.join();
+        TinyMAT_writeDatElement_i8a(mat, (int8_t*)joinednames.data(), joinednames.size());
+
+        // write data type
+        for (i = data.begin(); i != data.end(); ++i) {
+            QVariant v=i.value();
+            QString n=i.key();
+
+            if (v.type()==QVariant::String) {
+                QByteArray a=v.toString().toLatin1();
+                TinyMATWriter_writeString(mat, "", a.data(), a.size());
+            } else if (v.type()==QVariant::List) {
+                QVariantList a=v.toList();
+                TinyMATWriter_writeQVariantList(mat, "", a);
+            } else if (v.type()==QVariant::Map) {
+                QVariantMap a=v.toMap();
+                TinyMATWriter_writeQVariantMap(mat, "", a);
+            } else if (v.canConvert(QVariant::Double)) {
+                double a=v.toDouble();
+                TinyMATWriter_writeMatrix2D_colmajor(mat, "", &a, 1, 1);
+            } else if (v.canConvert(QVariant::PointF)) {
+                double a[2]={v.toPointF().x(), v.toPointF().y()};
+                TinyMATWriter_writeMatrix2D_colmajor(mat, "", a, 1, 2);
+            } else if (v.canConvert(QVariant::Point)) {
+                double a[2]={(double)v.toPoint().x(), (double)v.toPoint().y()};
+                TinyMATWriter_writeMatrix2D_colmajor(mat, "", a, 1, 2);
+            } else if (v.canConvert(QVariant::SizeF)) {
+                double a[2]={v.toSizeF().width(), v.toSizeF().height()};
+                TinyMATWriter_writeMatrix2D_colmajor(mat, "", a, 1, 2);
+            } else if (v.canConvert(QVariant::Size)) {
+                double a[2]={(double)v.toSize().width(), (double)v.toSize().height()};
+                TinyMATWriter_writeMatrix2D_colmajor(mat, "", a, 1, 2);
+            } else if (v.canConvert(QVariant::String)) {
+                QByteArray a=v.toString().toLatin1();
+                TinyMATWriter_writeString(mat, "", a.data(), a.size());
+            } else {
+                TinyMATWriter_writeMatrix2D_colmajor(mat, "", NULL, 0, 0);
+            }
+        }
+
+        long endpos;
+        endpos=TinyMAT_ftell(mat);
+        TinyMAT_fseek(mat, sizepos, SEEK_SET);
+        size_bytes=endpos-sizepos-4;
+        TinyMAT_write32(mat, size_bytes);
+        TinyMAT_fseek(mat, endpos, SEEK_SET);
     }
 
 #endif
