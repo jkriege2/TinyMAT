@@ -43,12 +43,7 @@
 #define TINYMAT_ORDER_UNKNOWN 0
 #define TINYMAT_ORDER_BIGENDIAN 1
 #define TINYMAT_ORDER_LITTLEENDIAN 2
-#ifndef TRUE
-#  define TRUE (0==0)
-#endif
-#ifndef FALSE
-#  define FALSE (0==1)
-#endif
+
 
 
 /*! \brief this struct represents a mat file
@@ -64,8 +59,8 @@ struct TinyMATWriterFile {
 };
 
 
-inline int TinyMATWriter_fOK(TinyMATWriterFile* mat) {
-	return (mat->file!=NULL);
+int TinyMATWriter_fOK(const TinyMATWriterFile* mat) {
+    return (mat && (mat->file!=NULL));
 }
 
 
@@ -98,7 +93,7 @@ inline int TinyMAT_get_byteorder()
     \internal
  */
 #define WRITE32DIRECT(filen, data)  { \
-    fwrite((void*)(&(data)), 4, 1, filen); \
+    fwrite((&(data)), 4, 1, filen); \
 }
 
 /*! \brief write a data word \a data , which is first cast into a 4-byte word directly into a file \a fileno
@@ -118,7 +113,7 @@ inline int TinyMAT_get_byteorder()
     \internal
  */
 #define WRITE16DIRECT(filen, data)    { \
-    fwrite((void*)(&(data)), 2, 1, filen); \
+    fwrite((&(data)), 2, 1, filen); \
 }
 
 /*! \brief write a data word \a data , which is first cast into a 2-byte word directly into a file \a fileno
@@ -143,38 +138,48 @@ inline int TinyMAT_get_byteorder()
 }
 
 inline void TinyMAT_write8(FILE* filen, uint8_t data) {
-	fwrite((void*)&data, 1, 1, filen);
+    if (!filen) return;
+    fwrite(&data, 1, 1, filen);
 }
 inline void TinyMAT_write8(FILE* filen, int8_t data) {
-	fwrite((void*)&data, 1, 1, filen);
+    if (!filen) return;
+    fwrite(&data, 1, 1, filen);
 }
 inline void TinyMAT_write16(FILE* filen, uint16_t data) {
-	fwrite((void*)&data, 2, 1, filen);
+    if (!filen) return;
+    fwrite(&data, 2, 1, filen);
 }
 inline void TinyMAT_write16(FILE* filen, int16_t data) {
-	fwrite((void*)&data, 2, 1, filen);
+    if (!filen) return;
+    fwrite(&data, 2, 1, filen);
 }
 inline void TinyMAT_write32(FILE* filen, uint32_t data) {
+    if (!filen) return;
     long spos=ftell(filen);
-    int ret=fwrite((void*)&data, 1,4, filen);
+    int ret=fwrite(&data, 4,1, filen);
     if ((ftell(filen)-spos)!=4) std::cout<<"!!!TinyMAT_write32u: "<<spos<<" "<<ftell(filen)<<" "<<(ftell(filen)-spos)<<" "<<ret<<"\n";
 }
 inline void TinyMAT_write32(FILE* filen, int32_t data) {
+    if (!filen) return;
     long spos=ftell(filen);
-    int ret=fwrite((void*)&data, 1,4, filen);
+    int ret=fwrite(&data, 4,1, filen);
     if ((ftell(filen)-spos)!=4) std::cout<<"!!!TinyMAT_write32s: "<<spos<<" "<<ftell(filen)<<" "<<(ftell(filen)-spos)<<" "<<ret<<"\n";
 }
 inline void TinyMAT_write64(FILE* filen, uint64_t data) {
-	fwrite((void*)&data, 8, 1, filen);
+    if (!filen) return;
+    fwrite(&data, 8, 1, filen);
 }
 inline void TinyMAT_write64(FILE* filen, int64_t data) {
-	fwrite((void*)&data, 8, 1, filen);
+    if (!filen) return;
+    fwrite(&data, 8, 1, filen);
 }
 inline void TinyMAT_write64d(FILE* filen, double data) {
-	fwrite((void*)&data, 8, 1, filen);
+    if (!filen) return;
+    fwrite(&data, 8, 1, filen);
 }
 inline void TinyMAT_write32f(FILE* filen, float data) {
-	fwrite((void*)&data, 4, 1, filen);
+    if (!filen) return;
+    fwrite(&data, 4, 1, filen);
 }
 
 
@@ -260,14 +265,14 @@ inline void TinyMAT_writeDatElement_dbla(FILE* mat, const double* data, size_t i
 //        std::cout<<"     TinyMAT_writeDatElement_dbla("<<NULL<<items<<items*8<<")"<<ftell(mat);
 //    }
     if (items>0 && data){
-        fwrite(data, items*8, 1, mat);
+        fwrite(data, 8, items, mat);
     }
     //fgetpos(mat, &p);
     //std::cout<<"     TinyMAT_writeDatElement_dbla() "<<ftell(mat);
 
     // check for correct pos in file!
-    if (ftell(mat)!=spos+8+items*8) {
-        fseek(mat, spos+8+items*8,SEEK_SET);
+    if (ftell(mat)!=(int64_t)(spos+8+items*8)) {
+        fseek(mat, spos+(int64_t)(8+items*8),SEEK_SET);
     }
 	// no padding required
 }
@@ -277,7 +282,7 @@ void TinyMAT_writeDatElement_dbla_rowmajor(FILE* mat, const double* data, size_t
     if (rows*cols>0) {
         for (size_t c=0; c<cols; c++) {
             for (size_t r=0; r<rows; r++) {
-                fwrite((void*)(&data[r*cols+c]), 8, 1, mat);
+                fwrite(&(data[r*cols+c]), 8, 1, mat);
             }
         }
     }
@@ -287,7 +292,7 @@ void TinyMAT_writeDatElement_u32a(FILE* mat, const uint32_t* data, size_t items)
 	TinyMAT_write32(mat, (uint32_t)TINYMAT_miUINT32);
 	TinyMAT_write32(mat, (uint32_t)(items*4));
     if (items>0) {
-        fwrite((void*)data, items*4, 1, mat);
+        fwrite(data, 4, items, mat);
         // write padding
         if (items%2==1) TinyMAT_write32(mat, (uint32_t)0);
     }
@@ -300,7 +305,7 @@ void TinyMAT_writeDatElement_string(FILE* mat, const char* data, size_t slen) {
     TinyMAT_write32(mat, (uint32_t)slen);
     if (slen>0) std::cout<<"TinyMAT_writeDatElement_string() slen="<<slen<<"  pad="<<pad<<"  spos="<<spos<<"\n";
     if (slen>0) {
-        fwrite(data, slen, 1, mat);
+        fwrite(data, 1, slen, mat);
         // write padding
         size_t pc=0;
         if (pad>0) {
@@ -385,7 +390,7 @@ TinyMATWriterFile* TinyMATWriter_open(const char* filename, const char* descript
 		} else {
 			desc[115]='\0';
 		}
-		fwrite(desc, 116,1,mat->file);
+        fwrite(desc, 1, 116,mat->file);
 		
 		// write "Header Subsystem Data Offset Field" (not used, i.e. write 00000000)
 		TinyMAT_write32(mat->file, (uint32_t)0x00000000);

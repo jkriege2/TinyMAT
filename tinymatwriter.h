@@ -83,6 +83,21 @@
   */
 struct TinyMATWriterFile; // forward
 
+#ifndef TRUE
+#  define TRUE (0==0)
+#endif
+#ifndef FALSE
+#  define FALSE (0==1)
+#endif
+
+/*! \brief returns \c TRUE (non-zero) if the given TinyMATWriterFile has been opened successfully and is OK
+    \ingroup tinymatwriter
+
+    \param mat the MAT-file
+    \return \c TRUE if the file is OK and can be written to or \c FALSE
+
+  */
+TINYMATWRITER_LIB_EXPORT int TinyMATWriter_fOK(const TinyMATWriterFile* mat);
 
 /*! \brief create a new MAT file
     \ingroup tinymatwriter
