@@ -647,12 +647,50 @@ void TinyMATWriter_close(TinyMATWriterFile* mat) {
         }
 
         long endpos=TinyMAT_ftell(mat);
-       TinyMAT_fseek(mat, sizepos, SEEK_SET);
+        TinyMAT_fseek(mat, sizepos, SEEK_SET);
         size_bytes=endpos-sizepos-4;
         TinyMAT_write32(mat, size_bytes);
-       TinyMAT_fseek(mat, endpos, SEEK_SET);
+        TinyMAT_fseek(mat, endpos, SEEK_SET);
     }
 
+    void TinyMATWriter_writeQStringList(TinyMATWriterFile *mat, const char *name, const QStringList &data)
+    {
+        uint32_t size_bytes=0;
+        uint32_t arrayflags[2]={TINYMAT_mxCELL_CLASS_arrayflags, 0};
+
+
+
+
+
+        // write tag header
+        TinyMAT_write32(mat, (uint32_t)TINYMAT_miMATRIX);
+        long sizepos=TinyMAT_ftell(mat);
+        TinyMAT_write32(mat, size_bytes);
+
+        // write arrayflags
+        TinyMAT_writeDatElement_u32a(mat, arrayflags, 2);
+
+        // write field dimensions
+        TinyMAT_write32(mat, (uint32_t)TINYMAT_miINT32);
+        TinyMAT_write32(mat, (uint32_t)8);
+        TinyMAT_write32(mat, (int32_t)1);
+        TinyMAT_write32(mat, (int32_t)data.size());
+
+        // write field name
+        TinyMAT_writeDatElement_stringas8bit(mat, name);
+
+        // write data type
+        for (int i=0; i<data.size(); i++) {
+            QByteArray a=data[i].toLatin1();
+            TinyMATWriter_writeString(mat, "", a.data(), a.size());
+        }
+
+        long endpos=TinyMAT_ftell(mat);
+        TinyMAT_fseek(mat, sizepos, SEEK_SET);
+        size_bytes=endpos-sizepos-4;
+        TinyMAT_write32(mat, size_bytes);
+        TinyMAT_fseek(mat, endpos, SEEK_SET);
+    }
 
     void TinyMATWriter_writeQVariantMatrix_listofcols(TinyMATWriterFile *mat, const char *name, const QList<QList<QVariant> > &data)
     {
@@ -735,11 +773,11 @@ void TinyMATWriter_close(TinyMATWriterFile* mat) {
 
         long endpos;
         endpos=TinyMAT_ftell(mat);
-       TinyMAT_fseek(mat, sizepos, SEEK_SET);
+        TinyMAT_fseek(mat, sizepos, SEEK_SET);
         //fsetpos(mat->file, &sizepos);
         size_bytes=endpos-sizepos-4;
         TinyMAT_write32(mat, size_bytes);
-       TinyMAT_fseek(mat, endpos, SEEK_SET);
+        TinyMAT_fseek(mat, endpos, SEEK_SET);
         //fsetpos(mat->file, &endpos);
         //std::cout<<endpos<<" "<<TinyMAT_ftell(mat)<<"\n";
     }

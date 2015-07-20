@@ -160,6 +160,15 @@ TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeMatrix2D_colmajor(TinyMATWriter
 
   */
 TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeQVariantList(TinyMATWriterFile* mat, const char* name, const QVariantList& data);
+/*! \brief write a 1-dimensional QStringList into a MAT-file as a cell array
+    \ingroup tinymatwriter
+
+    \param mat the MAT-file to write into
+    \param name variable name for the new array
+    \param data the array to write
+
+  */
+TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeQStringList(TinyMATWriterFile* mat, const char* name, const QStringList& data);
 /*! \brief write a 1-dimensional QVariantList (as a list of columns) into a MAT-file as a cell array
     \ingroup tinymatwriter
 
