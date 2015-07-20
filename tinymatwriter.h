@@ -28,6 +28,10 @@
 #endif
 
 #include <inttypes.h>
+#include <list>
+#include <vector>
+#include <string>
+#include <map>
 
 #ifdef TINYMAT_USES_QVARIANT
 #  include <QVariant>
@@ -74,6 +78,8 @@
    
  */
 
+
+
 /** \brief struct used to describe a TIFF file
   * \ingroup tinymatwriter
   */
@@ -114,6 +120,15 @@ TINYMATWRITER_LIB_EXPORT TinyMATWriterFile* TinyMATWriter_open(const char* filen
 
   */
 TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeString(TinyMATWriterFile* mat, const char* name, const char* data);
+/*! \brief write a string into a MAT-file
+    \ingroup tinymatwriter
+
+    \param mat the MAT-file to write into
+    \param name variable name for the new array
+    \param data the string to write
+
+  */
+TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeString(TinyMATWriterFile* mat, const char* name, const std::string& data);
 
 /*! \brief write a string into a MAT-file
     \ingroup tinymatwriter
@@ -126,19 +141,219 @@ TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeString(TinyMATWriterFile* mat, 
   */
 TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeString(TinyMATWriterFile* mat, const char* name, const char* data, uint32_t slen);
 
-/*! \brief write a 2-dimensional matrix in row-major order into a MAT-file
+
+/*! \brief write an empty (double) matrix into a MAT-file
     \ingroup tinymatwriter
 
     \param mat the MAT-file to write into
     \param name variable name for the new array
-    \param data_real the array to write (in row-major order)
-    \param cols number of columns
-    \param rows number of rows
 
   */
-TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeMatrix2D_rowmajor(TinyMATWriterFile* mat, const char* name, const double* data_real, int32_t cols, int32_t rows);
+TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeEmptyMatrix(TinyMATWriterFile* mat, const char* name);
 
-/*! \brief write a 2-dimensional matrix in column-major order into a MAT-file
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// METHODS TO WRITE MATRICES
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/*! \brief write a N-dimensional double matrix in column-major form into a MAT-file
+    \ingroup tinymatwriter
+
+    \param mat the MAT-file to write into
+    \param name variable name for the new array
+    \param data_real the array to write (in column-major order)
+    \param sizes number of entries in each dimension {rows, cols, matrices, ...}
+    \param ndims number of dimensions
+
+  */
+TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeMatrixND_colmajor(TinyMATWriterFile* mat, const char* name, const double* data_real, const int32_t* sizes, uint32_t ndims) ;
+
+/*! \brief write a N-dimensional float matrix in column-major form into a MAT-file
+    \ingroup tinymatwriter
+
+    \param mat the MAT-file to write into
+    \param name variable name for the new array
+    \param data_real the array to write (in column-major order)
+    \param sizes number of entries in each dimension {rows, cols, matrices, ...}
+    \param ndims number of dimensions
+
+  */
+TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeMatrixND_colmajor(TinyMATWriterFile* mat, const char* name, const float* data_real, const int32_t* sizes, uint32_t ndims) ;
+
+/*! \brief write a N-dimensional uint64_t matrix in column-major form into a MAT-file
+    \ingroup tinymatwriter
+
+    \param mat the MAT-file to write into
+    \param name variable name for the new array
+    \param data_real the array to write (in column-major order)
+    \param sizes number of entries in each dimension {rows, cols, matrices, ...}
+    \param ndims number of dimensions
+
+  */
+TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeMatrixND_colmajor(TinyMATWriterFile* mat, const char* name, const uint64_t* data_real, const int32_t* sizes, uint32_t ndims) ;
+
+/*! \brief write a N-dimensional int64_t matrix in column-major form into a MAT-file
+    \ingroup tinymatwriter
+
+    \param mat the MAT-file to write into
+    \param name variable name for the new array
+    \param data_real the array to write (in column-major order)
+    \param sizes number of entries in each dimension {rows, cols, matrices, ...}
+    \param ndims number of dimensions
+
+  */
+TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeMatrixND_colmajor(TinyMATWriterFile* mat, const char* name, const int64_t* data_real, const int32_t* sizes, uint32_t ndims) ;
+
+/*! \brief write a N-dimensional uint32_t matrix in column-major form into a MAT-file
+    \ingroup tinymatwriter
+
+    \param mat the MAT-file to write into
+    \param name variable name for the new array
+    \param data_real the array to write (in column-major order)
+    \param sizes number of entries in each dimension {rows, cols, matrices, ...}
+    \param ndims number of dimensions
+
+  */
+TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeMatrixND_colmajor(TinyMATWriterFile* mat, const char* name, const uint32_t* data_real, const int32_t* sizes, uint32_t ndims) ;
+
+/*! \brief write a N-dimensional int32_t matrix in column-major form into a MAT-file
+    \ingroup tinymatwriter
+
+    \param mat the MAT-file to write into
+    \param name variable name for the new array
+    \param data_real the array to write (in column-major order)
+    \param sizes number of entries in each dimension {rows, cols, matrices, ...}
+    \param ndims number of dimensions
+
+  */
+TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeMatrixND_colmajor(TinyMATWriterFile* mat, const char* name, const int32_t* data_real, const int32_t* sizes, uint32_t ndims) ;
+
+/*! \brief write a N-dimensional uint16_t matrix in column-major form into a MAT-file
+    \ingroup tinymatwriter
+
+    \param mat the MAT-file to write into
+    \param name variable name for the new array
+    \param data_real the array to write (in column-major order)
+    \param sizes number of entries in each dimension {rows, cols, matrices, ...}
+    \param ndims number of dimensions
+
+  */
+TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeMatrixND_colmajor(TinyMATWriterFile* mat, const char* name, const uint16_t* data_real, const int32_t* sizes, uint32_t ndims) ;
+
+/*! \brief write a N-dimensional int16_t matrix in column-major form into a MAT-file
+    \ingroup tinymatwriter
+
+    \param mat the MAT-file to write into
+    \param name variable name for the new array
+    \param data_real the array to write (in column-major order)
+    \param sizes number of entries in each dimension {rows, cols, matrices, ...}
+    \param ndims number of dimensions
+
+  */
+TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeMatrixND_colmajor(TinyMATWriterFile* mat, const char* name, const int16_t* data_real, const int32_t* sizes, uint32_t ndims) ;
+
+/*! \brief write a N-dimensional uint8_t matrix in column-major form into a MAT-file
+    \ingroup tinymatwriter
+
+    \param mat the MAT-file to write into
+    \param name variable name for the new array
+    \param data_real the array to write (in column-major order)
+    \param sizes number of entries in each dimension {rows, cols, matrices, ...}
+    \param ndims number of dimensions
+
+  */
+TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeMatrixND_colmajor(TinyMATWriterFile* mat, const char* name, const uint8_t* data_real, const int32_t* sizes, uint32_t ndims) ;
+
+/*! \brief write a N-dimensional int8_t matrix in column-major form into a MAT-file
+    \ingroup tinymatwriter
+
+    \param mat the MAT-file to write into
+    \param name variable name for the new array
+    \param data_real the array to write (in column-major order)
+    \param sizes number of entries in each dimension {rows, cols, matrices, ...}
+    \param ndims number of dimensions
+
+  */
+TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeMatrixND_colmajor(TinyMATWriterFile* mat, const char* name, const int8_t* data_real, const int32_t* sizes, uint32_t ndims) ;
+
+/*! \brief write a N-dimensional bool matrix in column-major form into a MAT-file
+    \ingroup tinymatwriter
+
+    \param mat the MAT-file to write into
+    \param name variable name for the new array
+    \param data_real the array to write (in column-major order)
+    \param sizes number of entries in each dimension {rows, cols, matrices, ...}
+    \param ndims number of dimensions
+
+  */
+TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeMatrixND_colmajor(TinyMATWriterFile* mat, const char* name, const bool* data_real, const int32_t* sizes, uint32_t ndims) ;
+
+
+
+/*! \brief write a N-dimensional double  matrix  into a MAT-file
+    \ingroup tinymatwriter
+
+    \param mat the MAT-file to write into
+    \param name variable name for the new array
+    \param data_real the array to write (in row-major order) {M1row1, M1row2, ..., M1rowC, M2row1, M2row2, ... }
+    \param sizes number of entries in each dimension {cols, rows, matrices, ...}
+    \param ndims number of dimensions
+
+  */
+template<typename T>
+inline void TinyMATWriter_writeMatrixND_rowmajor(TinyMATWriterFile* mat, const char* name, const T* data_real, const int32_t* sizes, uint32_t ndims) {
+    T* dat=NULL;
+    int32_t* siz=NULL;
+    if (data_real && sizes && ndims>1) {
+        uint32_t nentries=1;
+        uint32_t cols=1;
+        uint32_t rows=1;
+        uint32_t nmatrices=1;
+        for (uint32_t i=0; i<ndims; i++) {
+            if (i==0) {
+                nentries=sizes[0];
+            }
+            nentries=nentries*sizes[i];
+
+            if (i==0) cols=sizes[i];
+            else if (i==1) rows=sizes[i];
+            else {
+                nmatrices=nmatrices*sizes[i];
+            }
+        }
+        if (nentries>0) {
+            dat=new T[nentries];//(T*)malloc(nentries*sizeof(T));
+            siz=new int32_t[ndims];//=(int32_t*)malloc(ndims*sizeof(int32_t));
+            for (uint32_t i=0; i<ndims; i++) siz[i]=sizes[i];
+            if (ndims>1) {
+                siz[0]=sizes[1];
+                siz[1]=sizes[0];
+            }
+            for (uint32_t m=0; m<nmatrices; m++) {
+                for(uint32_t r=0; r<rows; r++) {
+                    for (uint32_t c=0; c<cols; c++) {
+                        dat[m*cols*rows+c*rows+r]=data_real[m*cols*rows+r*cols+c];
+                    }
+                }
+            }
+        }
+
+    }
+    if (dat) {
+        TinyMATWriter_writeMatrixND_colmajor(mat, name, dat, siz, ndims);
+        //free(dat);
+        //free(siz);
+        delete[] dat;
+        delete[] siz;
+    } else {
+        TinyMATWriter_writeMatrixND_colmajor(mat, name, data_real, sizes, ndims);
+    }
+}
+
+/*! \brief write a 2-dimensional double matrix in column-major order into a MAT-file
     \ingroup tinymatwriter
 
     \param mat the MAT-file to write into
@@ -148,7 +363,134 @@ TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeMatrix2D_rowmajor(TinyMATWriter
 	\param rows number of rows
 
   */
-TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeMatrix2D_colmajor(TinyMATWriterFile* mat, const char* name, const double* data_real, int32_t cols, int32_t rows);
+template<typename T>
+inline  void TinyMATWriter_writeMatrix2D_colmajor(TinyMATWriterFile* mat, const char* name, const T* data_real, int32_t cols, int32_t rows) {
+    int32_t siz[2]={rows, cols};
+    TinyMATWriter_writeMatrixND_colmajor(mat, name, data_real, siz, 2);
+}
+
+/*! \brief write a 2-dimensional double matrix in row-major order into a MAT-file
+    \ingroup tinymatwriter
+
+    \param mat the MAT-file to write into
+    \param name variable name for the new array
+    \param data_real the array to write (in row-major order)
+    \param cols number of columns
+    \param rows number of rows
+
+  */
+template<typename T>
+inline  void TinyMATWriter_writeMatrix2D_rowmajor(TinyMATWriterFile* mat, const char* name, const T* data_real, int32_t cols, int32_t rows) {
+    int32_t siz[2]={cols, rows};
+    TinyMATWriter_writeMatrixND_rowmajor(mat, name, data_real, siz, 2);
+}
+
+/*! \brief write a 1-dimensional double vector as a row-vector into a MAT-file
+    \ingroup tinymatwriter
+
+    \param mat the MAT-file to write into
+    \param name variable name for the new array
+    \param data_real the array to write (in row-major order)
+    \param cols number of columns
+    \param rows number of rows
+
+  */
+template<typename T>
+inline  void TinyMATWriter_writeVecorAsRow(TinyMATWriterFile* mat, const char* name, const T* data_real, int32_t rows) {
+    int32_t siz[2]={1, rows};
+    TinyMATWriter_writeMatrixND_rowmajor(mat, name, data_real, siz, 2);
+}
+
+/*! \brief write a 1-dimensional double vector as a column-vector into a MAT-file
+    \ingroup tinymatwriter
+
+    \param mat the MAT-file to write into
+    \param name variable name for the new array
+    \param data_real the array to write (in row-major order)
+    \param cols number of columns
+    \param rows number of rows
+
+  */
+template<typename T>
+inline  void TinyMATWriter_writeVecorAsColumn(TinyMATWriterFile* mat, const char* name, const T* data_real, int32_t rows) {
+    int32_t siz[2]={rows, 1};
+    TinyMATWriter_writeMatrixND_rowmajor(mat, name, data_real, siz, 2);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*! \brief write a 1-dimensional std::list<std::string> into a MAT-file as a cell array
+    \ingroup tinymatwriter
+
+    \param mat the MAT-file to write into
+    \param name variable name for the new array
+    \param data the array to write
+
+  */
+TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeStringList(TinyMATWriterFile* mat, const char* name, const std::list<std::string>& data);
+
+/*! \brief write a 1-dimensional std::vector<std::string> into a MAT-file as a cell array
+    \ingroup tinymatwriter
+
+    \param mat the MAT-file to write into
+    \param name variable name for the new array
+    \param data the array to write
+
+  */
+TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeStringVector(TinyMATWriterFile* mat, const char* name, const std::vector<std::string>& data);
+
+/*! \brief write a 1-dimensional std::list<double> into a MAT-file as a 1D matrix
+    \ingroup tinymatwriter
+
+    \param mat the MAT-file to write into
+    \param name variable name for the new array
+    \param data the array to write
+    \param columnVector if \C true, data is stored as a column vector ... otherwise as a row-vetor
+
+  */
+TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeDoubleList(TinyMATWriterFile* mat, const char* name, const std::list<double>& data, bool columnVector=false);
+
+/*! \brief write a 1-dimensional std::vector<double> into a MAT-file as a 1D matrix
+    \ingroup tinymatwriter
+
+    \param mat the MAT-file to write into
+    \param name variable name for the new array
+    \param data the array to write
+    \param columnVector if \C true, data is stored as a column vector ... otherwise as a row-vetor
+
+  */
+TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeDoubleVector(TinyMATWriterFile* mat, const char* name, const std::vector<double>& data, bool columnVector=false);
+
+
+/*! \brief write a a std::map<std::string,double> into a MAT-file as a struct
+    \ingroup tinymatwriter
+
+    \param mat the MAT-file to write into
+    \param name variable name for the new array
+    \param data the array to write
+    \param columnVector if \C true, data is stored as a column vector ... otherwise as a row-vetor
+
+  */
+TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeStruct(TinyMATWriterFile* mat, const char* name, const std::map<std::string, double>& data);
+
 
 #ifdef TINYMAT_USES_QVARIANT
 /*! \brief write a 1-dimensional QVariantList into a MAT-file as a cell array
