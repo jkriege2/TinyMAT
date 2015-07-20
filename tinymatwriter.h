@@ -160,7 +160,7 @@ TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeMatrix2D_colmajor(TinyMATWriter
 
   */
 TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeQVariantList(TinyMATWriterFile* mat, const char* name, const QVariantList& data);
-/*! \brief write a 1-dimensional QVariantList into a MAT-file as a cell array
+/*! \brief write a 1-dimensional QVariantList (as a list of columns) into a MAT-file as a cell array
     \ingroup tinymatwriter
 
     \param mat the MAT-file to write into
@@ -168,7 +168,7 @@ TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeQVariantList(TinyMATWriterFile*
     \param data the array to write
 
   */
-TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeQVariantMatrix(TinyMATWriterFile* mat, const char* name, const QList<QList<QVariant> >& data);
+TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeQVariantMatrix_listofcols(TinyMATWriterFile* mat, const char* name, const QList<QList<QVariant> >& data);
 /*! \brief write a QVariantMap into a MAT-file as a struct
     \ingroup tinymatwriter
 

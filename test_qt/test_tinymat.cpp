@@ -69,7 +69,7 @@ int main( int /*argc*/, const char* /*argv*/[] ) {
         smap["smap"]=smap;
         TinyMATWriter_writeString(mat, "string1", "teststring1data blabla");
         TinyMATWriter_writeQVariantList(mat, "vlist1", varlist);
-        TinyMATWriter_writeQVariantMatrix(mat, "vmatrix1", varmat);
+        TinyMATWriter_writeQVariantMatrix_listofcols(mat, "vmatrix1", varmat);
         TinyMATWriter_writeQVariantMap(mat, "vmap1", smap);
         TinyMATWriter_close(mat);
 	}

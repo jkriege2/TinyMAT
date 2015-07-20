@@ -654,7 +654,7 @@ void TinyMATWriter_close(TinyMATWriterFile* mat) {
     }
 
 
-    void TinyMATWriter_writeQVariantMatrix(TinyMATWriterFile *mat, const char *name, const QList<QList<QVariant> > &data)
+    void TinyMATWriter_writeQVariantMatrix_listofcols(TinyMATWriterFile *mat, const char *name, const QList<QList<QVariant> > &data)
     {
         uint32_t size_bytes=0;
         uint32_t arrayflags[2]={TINYMAT_mxCELL_CLASS_arrayflags, 0};
