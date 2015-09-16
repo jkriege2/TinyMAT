@@ -1566,7 +1566,10 @@ void TinyMATWriter_writeStringVector(TinyMATWriterFile *mat, const char *name, c
         TinyMAT_writeDatElementS_i32(mat, maxlen);
 
         // write field names
-        QByteArray joinednames=names.join();
+        QByteArray joinednames;//=names.join();
+        for (int i=0; i<names.size(); i++)  {
+            joinednames+=names[i];
+        }
         TinyMAT_writeDatElement_i8a(mat, (int8_t*)joinednames.data(), joinednames.size());
 
         // write data type

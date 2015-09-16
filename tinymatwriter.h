@@ -36,6 +36,10 @@
 #ifdef TINYMAT_USES_QVARIANT
 #  include <QVariant>
 #  include <QList>
+#  include <QStringList>
+#  include <QMap>
+#  include <QVector>
+#  include <QString>
 #endif
 
 
