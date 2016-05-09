@@ -507,7 +507,7 @@ inline  void TinyMATWriter_writeMatrix2x2(TinyMATWriterFile* mat, const char* na
 template<typename T>
 inline  void TinyMATWriter_writeMatrix3x3(TinyMATWriterFile* mat, const char* name, T m11, T m12, T m13, T m21, T m22, T m23, T m31, T m32, T m33) {
     int32_t siz[2]={3,3};
-    T data[4]={m11,m12,m13,m21,m22,m23,m31,m32,m33};
+    T data[9]={m11,m12,m13,m21,m22,m23,m31,m32,m33};
     TinyMATWriter_writeMatrixND_rowmajor(mat, name, data, siz, 2);
 }
 
