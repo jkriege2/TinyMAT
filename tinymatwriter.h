@@ -341,8 +341,9 @@ inline void TinyMATWriter_writeMatrixND_rowmajor(TinyMATWriterFile* mat, const c
         for (uint32_t i=0; i<ndims; i++) {
             if (i==0) {
                 nentries=sizes[0];
+            } else {
+                nentries=nentries*sizes[i];
             }
-            nentries=nentries*sizes[i];
 
             if (i==0) cols=sizes[i];
             else if (i==1) rows=sizes[i];

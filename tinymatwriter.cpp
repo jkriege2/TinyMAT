@@ -1837,6 +1837,7 @@ TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeCVMat(TinyMATWriterFile* mat, c
       throw std::runtime_error("OpenCV Matrix has too many dimensions or is empty");
     }
 
+
     mat->addStructItemName(name);
     int32_t sizes[2]={img.cols, img.rows};
     uint32_t ndims=2;
