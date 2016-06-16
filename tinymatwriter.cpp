@@ -1,7 +1,7 @@
 /*
     Copyright (c) 2008-2015 Jan W. Krieger (<jan@jkrieger.de>, <j.krieger@dkfz.de>), German Cancer Research Center (DKFZ) & IWR, University of Heidelberg
 
-    last modification: $LastChangedDate: 2016-02-10 11:10:40 +0100 (Mi, 10 Feb 2016) $  (revision $Rev: 91709 $)
+    last modification: $LastChangedDate: 2016-06-16 11:31:22 +0200 (Do, 16 Jun 2016) $  (revision $Rev: 94358 $)
 
     This software is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License (LGPL) as published by
@@ -179,12 +179,15 @@ int TinyMATWriter_fOK(const TinyMATWriterFile* mat)  {
      return ret;
  }
 
- TINYMAT_inlineattrib static TinyMATWriterFile* TinyMAT_fopen(const char* filename) {
+ TINYMAT_inlineattrib static TinyMATWriterFile* TinyMAT_fopen(const char* filename, size_t bufSize=1024*100) {
      //std::cout<<"TinyMAT_fopen()\n";
      //std::cout.flush();
      TinyMATWriterFile* mat=new TinyMATWriterFile;
 
      mat->file=fopen(filename, "wb+");
+     if (mat->file) {
+       setvbuf ( mat->file , NULL , _IOFBF , bufSize );
+     }
      mat->byteorder=(uint8_t)TinyMAT_get_byteorder();
      return mat;
  }
@@ -1018,8 +1021,8 @@ void TinyMATWriter_writeMatrixND_colmajor(TinyMATWriterFile *mat, const char *na
 }
 
 
-TinyMATWriterFile* TinyMATWriter_open(const char* filename, const char* description) {
-    TinyMATWriterFile* mat=TinyMAT_fopen(filename);
+TinyMATWriterFile* TinyMATWriter_open(const char* filename, const char* description, size_t bufSize) {
+    TinyMATWriterFile* mat=TinyMAT_fopen(filename, bufSize);
 
     if (TinyMATWriter_fOK(mat)) {
         // setup and write Description field (116 bytes)
@@ -1842,7 +1845,7 @@ TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeCVMat(TinyMATWriterFile* mat, c
     int32_t sizes[2]={img.cols, img.rows};
     uint32_t ndims=2;
     cv::Mat tmp=img.clone(); // make a full copy of the input matrix. The copy will contain the data in continuous form!!!
-    if (tmp.depth()==CV_8UC1) { TinyMATWriter_writeMultiChannelMatrixND_rowmajor(mat, name, (uint8_t*)tmp.data, sizes, ndims, (uint32_t)img.channels());
+    if (tmp.depth()==CV_8U) { TinyMATWriter_writeMultiChannelMatrixND_rowmajor(mat, name, (uint8_t*)tmp.data, sizes, ndims, (uint32_t)img.channels());
     } else if (tmp.depth()==CV_8S) { TinyMATWriter_writeMultiChannelMatrixND_rowmajor(mat, name, (int8_t*)tmp.data, sizes, ndims, (uint32_t)img.channels());
     } else if (tmp.depth()==CV_16U) { TinyMATWriter_writeMultiChannelMatrixND_rowmajor(mat, name, (uint16_t*)tmp.data, sizes, ndims, (uint32_t)img.channels());
     } else if (tmp.depth()==CV_16S) { TinyMATWriter_writeMultiChannelMatrixND_rowmajor(mat, name, (int16_t*)tmp.data, sizes, ndims, (uint32_t)img.channels());

@@ -118,10 +118,13 @@ TINYMATWRITER_LIB_EXPORT int TinyMATWriter_fOK(const TinyMATWriterFile* mat);
 
     \param filename name of the new TIFF file
     \param description description of the file (max. 115 characters)
+    \param bufSize size of the IO-Buffer used for the MAT-file ... Choosing a size 
+                   in the range of the final file size may improve performance!
+                   The default-size is 100kB.
     \return a new TinyMATWriterFile pointer on success, or NULL on errors
 
   */
-TINYMATWRITER_LIB_EXPORT TinyMATWriterFile* TinyMATWriter_open(const char* filename, const char* description=NULL);
+TINYMATWRITER_LIB_EXPORT TinyMATWriterFile* TinyMATWriter_open(const char* filename, const char* description=NULL, size_t bufSize=1024*100);
 
 /*! \brief write a string into a MAT-file
     \ingroup tinymatwriter
