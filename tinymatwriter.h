@@ -335,12 +335,15 @@ inline void TinyMATWriter_writeValue(TinyMATWriterFile* mat, const char* name, T
 template<typename T>
 inline void TinyMATWriter_writeMatrixND_rowmajor(TinyMATWriterFile* mat, const char* name, const T* data_real, const int32_t* sizes, uint32_t ndims) {
     T* dat=NULL;
+    const T* datOut=NULL;
     int32_t* siz=NULL;
+    bool freeDat=false;
     if (data_real && sizes && ndims>1) {
         uint32_t nentries=1;
         uint32_t cols=1;
         uint32_t rows=1;
         uint32_t nmatrices=1;
+        uint32_t nonSingularDimensions=0;
         for (uint32_t i=0; i<ndims; i++) {
             if (i==0) {
                 nentries=sizes[0];
@@ -353,30 +356,39 @@ inline void TinyMATWriter_writeMatrixND_rowmajor(TinyMATWriterFile* mat, const c
             else {
                 nmatrices=nmatrices*sizes[i];
             }
+            if (sizes[i]>1) nonSingularDimensions++;
         }
         if (nentries>0) {
-            dat=new T[nentries];//(T*)malloc(nentries*sizeof(T));
             siz=new int32_t[ndims];//=(int32_t*)malloc(ndims*sizeof(int32_t));
             for (uint32_t i=0; i<ndims; i++) siz[i]=sizes[i];
             if (ndims>1) {
                 siz[0]=sizes[1];
                 siz[1]=sizes[0];
             }
-            for (uint32_t m=0; m<nmatrices; m++) {
-                for(uint32_t r=0; r<rows; r++) {
-                    for (uint32_t c=0; c<cols; c++) {
-                        dat[m*cols*rows+c*rows+r]=data_real[m*cols*rows+r*cols+c];
-                    }
-                }
+            if (nonSingularDimensions<=1) {
+              // this is not a matrix, but a simple vector
+              datOut=data_real;
+              freeDat=false;
+            } else {
+              dat=new T[nentries];//(T*)malloc(nentries*sizeof(T));
+              datOut=dat;
+              freeDat=true;
+              for (uint32_t m=0; m<nmatrices; m++) {
+                  for(uint32_t r=0; r<rows; r++) {
+                      for (uint32_t c=0; c<cols; c++) {
+                          dat[m*cols*rows+c*rows+r]=data_real[m*cols*rows+r*cols+c];
+                      }
+                  }
+              }
             }
         }
 
     }
     if (dat) {
-        TinyMATWriter_writeMatrixND_colmajor(mat, name, dat, siz, ndims);
+        TinyMATWriter_writeMatrixND_colmajor(mat, name, datOut, siz, ndims);
         //free(dat);
         //free(siz);
-        delete[] dat;
+        if (freeDat) delete[] dat;
         delete[] siz;
     } else {
         TinyMATWriter_writeMatrixND_colmajor(mat, name, data_real, sizes, ndims);
@@ -675,6 +687,62 @@ inline  void TinyMATWriter_writeVecorAsColumn(TinyMATWriterFile* mat, const char
     TinyMATWriter_writeMatrixND_rowmajor(mat, name, data, siz, 2);
 }
 
+
+/*! \brief write a 1-dimensional vector/list/... of values as a row-vector into a MAT-file
+    \ingroup tinymatwriter
+    \internal
+
+    \param mat the MAT-file to write into
+    \param name variable name for the new array
+    \param data_vec the array to write. This container has to implement the function size() and
+                    an iterator with tool-functions begin() and end()
+
+
+    \note This function copies the contents of the container into a temporary array, which is then saved to 
+    the file. Use TinyMATWriter_writeContainerAsColumn() to use potential performance-optimizations for some 
+    container types.
+  */
+template<typename T>
+inline  void TinyMATWriter_writeContainerAsRow_internalCopy(TinyMATWriterFile* mat, const char* name, const T& data_vec) {
+    int32_t siz[2]={1, (int32_t)data_vec.size()};
+    T::value_type* tmp=(T::value_type*)malloc(data_vec.size()*sizeof(T::value_type));
+    int i=0;
+    for (auto it=data_vec.begin(); it!=data_vec.end(); ++it) {
+      tmp[i]=*it;
+      i++;
+    }
+    TinyMATWriter_writeMatrixND_rowmajor(mat, name, tmp, siz, 2);
+    free(tmp);
+}
+
+/*! \brief write a 1-dimensional vector/list/... of values as a column-vector into a MAT-file
+    \ingroup tinymatwriter
+    \internal
+
+    \param mat the MAT-file to write into
+    \param name variable name for the new array
+    \param data_vec the array to write. This container has to implement the function size() and
+                    an iterator with tool-functions begin() and end(). Data-Items (T::value_type)
+                    has to be integer numbers or floats
+
+    \note This function copies the contents of the container into a temporary array, which is then saved to 
+    the file. Use TinyMATWriter_writeContainerAsColumn() to use potential performance-optimizations for some 
+    container types.
+  */
+template<typename T>
+inline  void TinyMATWriter_writeContainerAsColumn_internalCopy(TinyMATWriterFile* mat, const char* name, const T& data_vec) {
+    int32_t siz[2]={(int32_t)data_vec.size(), 1};
+    T::value_type* tmp=(T::value_type*)malloc(data_vec.size()*sizeof(T::value_type));
+    int i=0;
+    for (auto it=data_vec.begin(); it!=data_vec.end(); ++it) {
+      tmp[i]=*it;
+      i++;
+    }
+    TinyMATWriter_writeMatrixND_rowmajor(mat, name, tmp, siz, 2);
+    free(tmp);
+}
+
+
 /*! \brief write a 1-dimensional vector/list/... of values as a row-vector into a MAT-file
     \ingroup tinymatwriter
 
@@ -686,15 +754,7 @@ inline  void TinyMATWriter_writeVecorAsColumn(TinyMATWriterFile* mat, const char
   */
 template<typename T>
 inline  void TinyMATWriter_writeContainerAsRow(TinyMATWriterFile* mat, const char* name, const T& data_vec) {
-    int32_t siz[2]={1, (int32_t)data_vec.size()};
-    T::value_type* tmp=(T::value_type*)malloc(data_vec.size()*sizeof(T::value_type));
-    int i=0;
-    for (auto it=data_vec.begin(); it!=data_vec.end(); ++it) {
-      tmp[i]=*it;
-      i++;
-    }
-    TinyMATWriter_writeMatrixND_rowmajor(mat, name, tmp, siz, 2);
-    free(tmp);
+    TinyMATWriter_writeContainerAsRow_internalCopy(mat, name, data_vec);
 }
 
 /*! \brief write a 1-dimensional vector/list/... of values as a column-vector into a MAT-file
@@ -709,22 +769,84 @@ inline  void TinyMATWriter_writeContainerAsRow(TinyMATWriterFile* mat, const cha
   */
 template<typename T>
 inline  void TinyMATWriter_writeContainerAsColumn(TinyMATWriterFile* mat, const char* name, const T& data_vec) {
-    int32_t siz[2]={(int32_t)data_vec.size(), 1};
-    T::value_type* tmp=(T::value_type*)malloc(data_vec.size()*sizeof(T::value_type));
-    int i=0;
-    for (auto it=data_vec.begin(); it!=data_vec.end(); ++it) {
-      tmp[i]=*it;
-      i++;
-    }
-    TinyMATWriter_writeMatrixND_rowmajor(mat, name, tmp, siz, 2);
-    free(tmp);
+    TinyMATWriter_writeContainerAsColumn_internalCopy(mat, name, data_vec);
 }
 
+#if (__cplusplus > 199711L) || ( defined(_MSC_VER) && ( _MSC_VER >= 1700 ) ) 
+
+  /*! \brief write a 1-dimensional std::vector of values as a row-vector into a MAT-file
+      \ingroup tinymatwriter
+
+      This is a performance-optimized specialization.
+
+      \param mat the MAT-file to write into
+      \param name variable name for the new array
+      \param data_vec the array to write. This container has to implement the function size() and
+                      an iterator with tool-functions begin() and end()
 
 
+    */
+  template<typename T>
+  inline  void TinyMATWriter_writeContainerAsRow(TinyMATWriterFile* mat, const char* name, const std::vector<T>& data_vec) {
+      if (data_vec.size()<=0) TinyMATWriter_writeEmptyMatrix(mat, name);
+      int32_t siz[2]={1, (int32_t)data_vec.size()};
+      const T* tmp=data_vec.data(); 
+      TinyMATWriter_writeMatrixND_rowmajor(mat, name, tmp, siz, 2);
+  }
 
 
+  /*! \brief write a 1-dimensional std::vector<bool> of values as a row-vector into a MAT-file
+      \ingroup tinymatwriter
 
+      \param mat the MAT-file to write into
+      \param name variable name for the new array
+      \param data_vec the array to write. This container has to implement the function size() and
+                      an iterator with tool-functions begin() and end(). Data-Items (T::value_type)
+                      has to be integer numbers or floats
+
+    */
+  template<>
+  inline  void TinyMATWriter_writeContainerAsRow(TinyMATWriterFile* mat, const char* name, const std::vector<bool>& data_vec) {
+      TinyMATWriter_writeContainerAsRow_internalCopy(mat, name, data_vec);
+  }
+
+  /*! \brief write a 1-dimensional std::vector of values as a column-vector into a MAT-file
+      \ingroup tinymatwriter
+
+      This is a performance-optimized specialization.
+
+      \param mat the MAT-file to write into
+      \param name variable name for the new array
+      \param data_vec the array to write. This container has to implement the function size() and
+                      an iterator with tool-functions begin() and end(). Data-Items (T::value_type)
+                      has to be integer numbers or floats
+
+    */
+  template<typename T>
+  inline  void TinyMATWriter_writeContainerAsColumn(TinyMATWriterFile* mat, const char* name, const std::vector<T>& data_vec) {
+      if (data_vec.size()<=0) TinyMATWriter_writeEmptyMatrix(mat, name);
+      int32_t siz[2]={(int32_t)data_vec.size(), 1};
+      const T* tmp=data_vec.data(); 
+      TinyMATWriter_writeMatrixND_rowmajor(mat, name, tmp, siz, 2);
+  }
+
+  /*! \brief write a 1-dimensional std::vector<bool> of values as a column-vector into a MAT-file
+      \ingroup tinymatwriter
+
+      \param mat the MAT-file to write into
+      \param name variable name for the new array
+      \param data_vec the array to write. This container has to implement the function size() and
+                      an iterator with tool-functions begin() and end(). Data-Items (T::value_type)
+                      has to be integer numbers or floats
+
+    */
+  template<>
+  inline  void TinyMATWriter_writeContainerAsColumn(TinyMATWriterFile* mat, const char* name, const std::vector<bool>& data_vec) {
+      TinyMATWriter_writeContainerAsColumn_internalCopy(mat, name, data_vec);
+  }
+
+
+#endif
 
 
 

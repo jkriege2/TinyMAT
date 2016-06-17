@@ -1,7 +1,7 @@
 /*
     Copyright (c) 2008-2015 Jan W. Krieger (<jan@jkrieger.de>, <j.krieger@dkfz.de>), German Cancer Research Center (DKFZ) & IWR, University of Heidelberg
 
-    last modification: $LastChangedDate: 2016-06-16 11:31:22 +0200 (Do, 16 Jun 2016) $  (revision $Rev: 94358 $)
+    last modification: $LastChangedDate: 2016-06-17 13:25:56 +0200 (Fr, 17 Jun 2016) $  (revision $Rev: 94402 $)
 
     This software is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License (LGPL) as published by
@@ -186,7 +186,11 @@ int TinyMATWriter_fOK(const TinyMATWriterFile* mat)  {
 
      mat->file=fopen(filename, "wb+");
      if (mat->file) {
-       setvbuf ( mat->file , NULL , _IOFBF , bufSize );
+         if (bufSize>0) {
+            setvbuf ( mat->file , NULL , _IOFBF , bufSize );
+         } else {
+            setvbuf ( mat->file , NULL , _IOFBF , BUFSIZ );
+         }
      }
      mat->byteorder=(uint8_t)TinyMAT_get_byteorder();
      return mat;
