@@ -1,7 +1,7 @@
 /*
     Copyright (c) 2008-2015 Jan W. Krieger (<jan@jkrieger.de>, <j.krieger@dkfz.de>), German Cancer Research Center (DKFZ) & IWR, University of Heidelberg
 
-    last modification: $LastChangedDate: 2016-06-17 13:25:56 +0200 (Fr, 17 Jun 2016) $  (revision $Rev: 94402 $)
+    last modification: $LastChangedDate: 2016-06-24 09:39:42 +0200 (Fr, 24 Jun 2016) $  (revision $Rev: 94548 $)
 
     This software is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License (LGPL) as published by
@@ -173,7 +173,11 @@ int TinyMATWriter_fOK(const TinyMATWriterFile* mat)  {
  TINYMAT_inlineattrib static int TinyMAT_fclose(TinyMATWriterFile* file) {
      //std::cout<<"TinyMAT_fclose()\n";
      //std::cout.flush();
-     if (!file || !file->file) return 0;
+     if (!file) return 0;
+     if (!file->file) {
+       delete file;
+       return 0;
+     }
      int ret= fclose(file->file);
      delete file;
      return ret;
@@ -1243,10 +1247,9 @@ void TinyMATWriter_writeEmptyMatrix(TinyMATWriterFile *mat, const char *name)
 void TinyMATWriter_close(TinyMATWriterFile* mat) {
     if (mat) {
         while (mat->structures.size()>0) {
-          TinyMATWriter_endStruct(mat);
+            TinyMATWriter_endStruct(mat);
         }
         if (mat->file) TinyMAT_fclose(mat);
-
     }
 }
 
@@ -1272,54 +1275,6 @@ std::string TinyMAT_combineStrings(const std::vector<std::string>& fieldnames, i
     }
     if (maxlen_out) *maxlen_out=maxlen;
     return joinednames;
-}
-
-TinyMATWriterStruct* TinyMATWriter_startStruct(TinyMATWriterFile *mat, const char *name, const std::vector<std::string>& fieldnames)
-{
-    mat->addStructItemName(name);
-    mat->startStruct();
-    TinyMATWriterStruct* struc=new TinyMATWriterStruct;
-    uint32_t size_bytes=0;
-    uint32_t arrayflags[2]={TINYMAT_mxSTRUCT_CLASS_arrayflags, 0};
-    int32_t maxlen=0;
-    std::string joinednames=TinyMAT_combineStrings(fieldnames, &maxlen);
-
-
-
-    // write tag header
-    TinyMAT_write32(mat, (uint32_t)TINYMAT_miMATRIX);
-    struc->sizepos=TinyMAT_ftell(mat);
-    TinyMAT_write32(mat, size_bytes);
-
-    // write arrayflags
-    TinyMAT_writeDatElement_u32a(mat, arrayflags, 2);
-
-    // write field dimensions
-    TinyMAT_write32(mat, (uint32_t)TINYMAT_miINT32);
-    TinyMAT_write32(mat, (uint32_t)8);
-    TinyMAT_write32(mat, (int32_t)1);
-    TinyMAT_write32(mat, (int32_t)1);
-
-    // write struct name
-    TinyMAT_writeDatElement_stringas8bit(mat, name);
-
-    // write field name length
-    TinyMAT_writeDatElementS_i32(mat, maxlen);
-
-    // write field names
-    TinyMAT_writeDatElement_stringas8bit(mat, joinednames.c_str(), (uint32_t)joinednames.size());
-
-    return struc;
-}
-
-void TinyMATWriter_endStruct(TinyMATWriterFile* mat, TinyMATWriterStruct* struc) {
-    long endpos=TinyMAT_ftell(mat);
-    TinyMAT_fseek(mat, struc->sizepos, SEEK_SET);
-    uint32_t size_bytes=endpos-struc->sizepos-4;
-    TinyMAT_write32(mat, size_bytes);
-    TinyMAT_fseek(mat, endpos, SEEK_SET);
-    delete struc;
-    mat->endStruct();
 }
 
 
@@ -1363,21 +1318,20 @@ void TinyMATWriter_endStruct(TinyMATWriterFile* mat) {
           stored data. This way, the API can internally collect the item names, which have to be put into the file BEFORE the
           actual data.
     */
-    TinyMATWriterStruct* struc=new TinyMATWriterStruct;
-    *struc=mat->lastStruct();
+    TinyMATWriterStruct& struc=mat->lastStruct();
 
     long start=TinyMAT_ftell(mat);
-    long ssize=start-struc->data_start;
+    long ssize=start-struc.data_start;
     uint8_t* tmpdata=(uint8_t*)malloc(ssize*sizeof(uint8_t));
-    TinyMAT_fseek(mat, struc->data_start, SEEK_SET);
+    TinyMAT_fseek(mat, struc.data_start, SEEK_SET);
     TinyMAT_fread(tmpdata, ssize, 1, mat);
 
 
     int32_t maxlen=0;
-    std::string joinednames=TinyMAT_combineStrings(struc->itemnames, &maxlen);
+    std::string joinednames=TinyMAT_combineStrings(struc.itemnames, &maxlen);
 
 
-    TinyMAT_fseek(mat, struc->data_start, SEEK_SET);
+    TinyMAT_fseek(mat, struc.data_start, SEEK_SET);
     // write field name length
     TinyMAT_writeDatElementS_i32(mat, maxlen);
 
@@ -1387,8 +1341,14 @@ void TinyMATWriter_endStruct(TinyMATWriterFile* mat) {
     TinyMAT_fwrite(tmpdata, ssize, 1, mat);
 
     free(tmpdata);
-    TinyMATWriter_endStruct(mat, struc);
-    
+
+
+    long endpos=TinyMAT_ftell(mat);
+    TinyMAT_fseek(mat, struc.sizepos, SEEK_SET);
+    uint32_t size_bytes=endpos-struc.sizepos-4;
+    TinyMAT_write32(mat, size_bytes);
+    TinyMAT_fseek(mat, endpos, SEEK_SET);
+    mat->endStruct();
 }
 
 

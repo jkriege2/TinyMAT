@@ -95,7 +95,7 @@ struct TinyMATWriterFile; // forward
 /** \brief struct used to reference a struct inside a file
   * \ingroup tinymatwriter
   */
-struct TinyMATWriterStruct; // forward
+//struct TinyMATWriterStruct; // forward
 
 #ifndef TRUE
 #  define TRUE (0==0)
@@ -388,11 +388,12 @@ inline void TinyMATWriter_writeMatrixND_rowmajor(TinyMATWriterFile* mat, const c
         TinyMATWriter_writeMatrixND_colmajor(mat, name, datOut, siz, ndims);
         //free(dat);
         //free(siz);
-        if (freeDat) delete[] dat;
-        delete[] siz;
+        
     } else {
         TinyMATWriter_writeMatrixND_colmajor(mat, name, data_real, sizes, ndims);
     }
+    if (freeDat && dat) delete[] dat;
+    if (siz) delete[] siz;
 }
 
 
@@ -925,14 +926,14 @@ TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeStruct(TinyMATWriterFile* mat, 
                       These names have to be in the same order as the write-operations that follow between TinyMATWriter_startStruct()
                       and TinyMATWriter_endStruct().
   */
-TINYMATWRITER_LIB_EXPORT TinyMATWriterStruct* TinyMATWriter_startStruct(TinyMATWriterFile *mat, const char *name, const std::vector<std::string>& fieldnames);
+//TINYMATWRITER_LIB_EXPORT TinyMATWriterStruct* TinyMATWriter_startStruct(TinyMATWriterFile *mat, const char *name, const std::vector<std::string>& fieldnames);
 /*! \brief end to write a struct-element
     \ingroup tinymatwriter
 
     \param mat the MAT-file to write into
     \param name struc the structure object to finish
   */
-TINYMATWRITER_LIB_EXPORT void TinyMATWriter_endStruct(TinyMATWriterFile* mat, TinyMATWriterStruct* struc);
+//TINYMATWRITER_LIB_EXPORT void TinyMATWriter_endStruct(TinyMATWriterFile* mat, TinyMATWriterStruct* struc);
 
 
 
