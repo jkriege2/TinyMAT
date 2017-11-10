@@ -27,6 +27,7 @@
 #endif
 
 #include <stdint.h>
+#include <memory>
 #include <list>
 #include <vector>
 #include <string>
@@ -43,7 +44,9 @@
 
 
 #ifdef TINYMAT_USES_OPENCV
+#pragma warning(push, 0)
 #  include <opencv2/opencv.hpp>
+#pragma warning(pop)
 #endif
 
 /*! \defgroup tinymatwriter Tiny Matlab(r) MAT writer library
@@ -318,7 +321,7 @@ TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeMatrixND_colmajor(TinyMATWriter
   */
 template<typename T>
 inline void TinyMATWriter_writeValue(TinyMATWriterFile* mat, const char* name, T data_real) {
-  TinyMATWriter_writeVecorAsColumn(mat, name, &data_real, 1);
+  TinyMATWriter_writeVectorAsColumn(mat, name, &data_real, 1);
 }
 
 
@@ -538,7 +541,7 @@ inline  void TinyMATWriter_writeMatrix3x3(TinyMATWriterFile* mat, const char* na
 
   */
 template<typename T>
-inline  void TinyMATWriter_writeVecorAsRow(TinyMATWriterFile* mat, const char* name, const T* data_real, int32_t rows) {
+inline  void TinyMATWriter_writeVectorAsRow(TinyMATWriterFile* mat, const char* name, const T* data_real, int32_t rows) {
     int32_t siz[2]={1, rows};
     TinyMATWriter_writeMatrixND_rowmajor(mat, name, data_real, siz, 2);
 }
@@ -554,57 +557,69 @@ inline  void TinyMATWriter_writeVecorAsRow(TinyMATWriterFile* mat, const char* n
 
   */
 template<typename T>
-inline  void TinyMATWriter_writeVecorAsRow(TinyMATWriterFile* mat, const char* name, T d1, T d2) {
-    int32_t siz[2]={2,1};
+inline  void TinyMATWriter_writeVectorAsRow(TinyMATWriterFile* mat, const char* name, T d1, T d2) {
+    int32_t siz[2]={1,2};
     T data[2]={d1, d2};
     TinyMATWriter_writeMatrixND_rowmajor(mat, name, data, siz, 2);
 }
 template<typename T>
-inline  void TinyMATWriter_writeVecorAsRow(TinyMATWriterFile* mat, const char* name, T d1, T d2, T d3) {
-    int32_t siz[2]={3,1};
+inline  void TinyMATWriter_writeVectorAsRow(TinyMATWriterFile* mat, const char* name, T d1, T d2, T d3) {
+    int32_t siz[2]={1,3};
     T data[]={d1, d2, d3};
     TinyMATWriter_writeMatrixND_rowmajor(mat, name, data, siz, 2);
 }
 template<typename T>
-inline  void TinyMATWriter_writeVecorAsRow(TinyMATWriterFile* mat, const char* name, T d1, T d2, T d3, T d4) {
-    int32_t siz[2]={4,1};
+inline  void TinyMATWriter_writeVectorAsRow(TinyMATWriterFile* mat, const char* name, T d1, T d2, T d3, T d4) {
+    int32_t siz[2]={1,4};
     T data[]={d1, d2, d3, d4};
     TinyMATWriter_writeMatrixND_rowmajor(mat, name, data, siz, 2);
 }
 template<typename T>
-inline  void TinyMATWriter_writeVecorAsRow(TinyMATWriterFile* mat, const char* name, T d1, T d2, T d3, T d4, T d5) {
-    int32_t siz[2]={5,1};
+inline  void TinyMATWriter_writeVectorAsRow(TinyMATWriterFile* mat, const char* name, T d1, T d2, T d3, T d4, T d5) {
+    int32_t siz[2]={1,5};
     T data[]={d1, d2, d3, d4, d5};
     TinyMATWriter_writeMatrixND_rowmajor(mat, name, data, siz, 2);
 }
 template<typename T>
-inline  void TinyMATWriter_writeVecorAsRow(TinyMATWriterFile* mat, const char* name, T d1, T d2, T d3, T d4, T d5, T d6) {
-    int32_t siz[2]={6,1};
+inline  void TinyMATWriter_writeVectorAsRow(TinyMATWriterFile* mat, const char* name, T d1, T d2, T d3, T d4, T d5, T d6) {
+    int32_t siz[2]={1,6};
     T data[]={d1, d2, d3, d4, d5, d6};
     TinyMATWriter_writeMatrixND_rowmajor(mat, name, data, siz, 2);
 }
 template<typename T>
-inline  void TinyMATWriter_writeVecorAsRow(TinyMATWriterFile* mat, const char* name, T d1, T d2, T d3, T d4, T d5, T d6, T d7) {
-    int32_t siz[2]={7,1};
+inline  void TinyMATWriter_writeVectorAsRow(TinyMATWriterFile* mat, const char* name, T d1, T d2, T d3, T d4, T d5, T d6, T d7) {
+    int32_t siz[2]={1,7};
     T data[]={d1, d2, d3, d4, d5, d6, d7};
     TinyMATWriter_writeMatrixND_rowmajor(mat, name, data, siz, 2);
 }
 template<typename T>
-inline  void TinyMATWriter_writeVecorAsRow(TinyMATWriterFile* mat, const char* name, T d1, T d2, T d3, T d4, T d5, T d6, T d7, T d8) {
-    int32_t siz[2]={8,1};
+inline  void TinyMATWriter_writeVectorAsRow(TinyMATWriterFile* mat, const char* name, T d1, T d2, T d3, T d4, T d5, T d6, T d7, T d8) {
+    int32_t siz[2]={1,8};
     T data[]={d1, d2, d3, d4, d5, d6, d7, d8};
     TinyMATWriter_writeMatrixND_rowmajor(mat, name, data, siz, 2);
 }
 template<typename T>
-inline  void TinyMATWriter_writeVecorAsRow(TinyMATWriterFile* mat, const char* name, T d1, T d2, T d3, T d4, T d5, T d6, T d7, T d8, T d9) {
-    int32_t siz[2]={9,1};
+inline  void TinyMATWriter_writeVectorAsRow(TinyMATWriterFile* mat, const char* name, T d1, T d2, T d3, T d4, T d5, T d6, T d7, T d8, T d9) {
+    int32_t siz[2]={1,9};
     T data[]={d1, d2, d3, d4, d5, d6, d7, d8, d9};
     TinyMATWriter_writeMatrixND_rowmajor(mat, name, data, siz, 2);
 }
 template<typename T>
-inline  void TinyMATWriter_writeVecorAsRow(TinyMATWriterFile* mat, const char* name, T d1, T d2, T d3, T d4, T d5, T d6, T d7, T d8, T d9, T d10) {
-    int32_t siz[2]={10, 1};
+inline  void TinyMATWriter_writeVectorAsRow(TinyMATWriterFile* mat, const char* name, T d1, T d2, T d3, T d4, T d5, T d6, T d7, T d8, T d9, T d10) {
+    int32_t siz[2]={1, 10};
     T data[]={d1, d2, d3, d4, d5, d6, d7, d8, d9, d10};
+    TinyMATWriter_writeMatrixND_rowmajor(mat, name, data, siz, 2);
+}
+template<typename T>
+inline  void TinyMATWriter_writeVectorAsRow(TinyMATWriterFile* mat, const char* name, T d1, T d2, T d3, T d4, T d5, T d6, T d7, T d8, T d9, T d10, T d11) {
+    int32_t siz[2]={1,11};
+    T data[]={d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11};
+    TinyMATWriter_writeMatrixND_rowmajor(mat, name, data, siz, 2);
+}
+template<typename T>
+inline  void TinyMATWriter_writeVectorAsRow(TinyMATWriterFile* mat, const char* name, T d1, T d2, T d3, T d4, T d5, T d6, T d7, T d8, T d9, T d10, T d11, T d12) {
+    int32_t siz[2]={1,12};
+    T data[]={d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12};
     TinyMATWriter_writeMatrixND_rowmajor(mat, name, data, siz, 2);
 }
 
@@ -619,7 +634,7 @@ inline  void TinyMATWriter_writeVecorAsRow(TinyMATWriterFile* mat, const char* n
 
   */
 template<typename T>
-inline  void TinyMATWriter_writeVecorAsColumn(TinyMATWriterFile* mat, const char* name, const T* data_real, int32_t rows) {
+inline  void TinyMATWriter_writeVectorAsColumn(TinyMATWriterFile* mat, const char* name, const T* data_real, int32_t rows) {
     int32_t siz[2]={rows, 1};
     TinyMATWriter_writeMatrixND_rowmajor(mat, name, data_real, siz, 2);
 }
@@ -634,56 +649,56 @@ inline  void TinyMATWriter_writeVecorAsColumn(TinyMATWriterFile* mat, const char
 
   */
 template<typename T>
-inline  void TinyMATWriter_writeVecorAsColumn(TinyMATWriterFile* mat, const char* name, T d1, T d2) {
-    int32_t siz[2]={1,2};
+inline  void TinyMATWriter_writeVectorAsColumn(TinyMATWriterFile* mat, const char* name, T d1, T d2) {
+    int32_t siz[2]={2,1};
     T data[2]={d1, d2};
     TinyMATWriter_writeMatrixND_rowmajor(mat, name, data, siz, 2);
 }
 template<typename T>
-inline  void TinyMATWriter_writeVecorAsColumn(TinyMATWriterFile* mat, const char* name, T d1, T d2, T d3) {
-    int32_t siz[2]={1,3};
+inline  void TinyMATWriter_writeVectorAsColumn(TinyMATWriterFile* mat, const char* name, T d1, T d2, T d3) {
+    int32_t siz[2]={3,1};
     T data[]={d1, d2, d3};
     TinyMATWriter_writeMatrixND_rowmajor(mat, name, data, siz, 2);
 }
 template<typename T>
-inline  void TinyMATWriter_writeVecorAsColumn(TinyMATWriterFile* mat, const char* name, T d1, T d2, T d3, T d4) {
-    int32_t siz[2]={1,4};
+inline  void TinyMATWriter_writeVectorAsColumn(TinyMATWriterFile* mat, const char* name, T d1, T d2, T d3, T d4) {
+    int32_t siz[2]={4,1};
     T data[]={d1, d2, d3, d4};
     TinyMATWriter_writeMatrixND_rowmajor(mat, name, data, siz, 2);
 }
 template<typename T>
-inline  void TinyMATWriter_writeVecorAsColumn(TinyMATWriterFile* mat, const char* name, T d1, T d2, T d3, T d4, T d5) {
-    int32_t siz[2]={1,5};
+inline  void TinyMATWriter_writeVectorAsColumn(TinyMATWriterFile* mat, const char* name, T d1, T d2, T d3, T d4, T d5) {
+    int32_t siz[2]={5,1};
     T data[]={d1, d2, d3, d4, d5};
     TinyMATWriter_writeMatrixND_rowmajor(mat, name, data, siz, 2);
 }
 template<typename T>
-inline  void TinyMATWriter_writeVecorAsColumn(TinyMATWriterFile* mat, const char* name, T d1, T d2, T d3, T d4, T d5, T d6) {
-    int32_t siz[2]={1,6};
+inline  void TinyMATWriter_writeVectorAsColumn(TinyMATWriterFile* mat, const char* name, T d1, T d2, T d3, T d4, T d5, T d6) {
+    int32_t siz[2]={6,1};
     T data[]={d1, d2, d3, d4, d5, d6};
     TinyMATWriter_writeMatrixND_rowmajor(mat, name, data, siz, 2);
 }
 template<typename T>
-inline  void TinyMATWriter_writeVecorAsColumn(TinyMATWriterFile* mat, const char* name, T d1, T d2, T d3, T d4, T d5, T d6, T d7) {
-    int32_t siz[2]={1,7};
+inline  void TinyMATWriter_writeVectorAsColumn(TinyMATWriterFile* mat, const char* name, T d1, T d2, T d3, T d4, T d5, T d6, T d7) {
+    int32_t siz[2]={7,1};
     T data[]={d1, d2, d3, d4, d5, d6, d7};
     TinyMATWriter_writeMatrixND_rowmajor(mat, name, data, siz, 2);
 }
 template<typename T>
-inline  void TinyMATWriter_writeVecorAsColumn(TinyMATWriterFile* mat, const char* name, T d1, T d2, T d3, T d4, T d5, T d6, T d7, T d8) {
-    int32_t siz[2]={1,8};
+inline  void TinyMATWriter_writeVectorAsColumn(TinyMATWriterFile* mat, const char* name, T d1, T d2, T d3, T d4, T d5, T d6, T d7, T d8) {
+    int32_t siz[2]={8,1};
     T data[]={d1, d2, d3, d4, d5, d6, d7, d8};
     TinyMATWriter_writeMatrixND_rowmajor(mat, name, data, siz, 2);
 }
 template<typename T>
-inline  void TinyMATWriter_writeVecorAsColumn(TinyMATWriterFile* mat, const char* name, T d1, T d2, T d3, T d4, T d5, T d6, T d7, T d8, T d9) {
-    int32_t siz[2]={1,9};
+inline  void TinyMATWriter_writeVectorAsColumn(TinyMATWriterFile* mat, const char* name, T d1, T d2, T d3, T d4, T d5, T d6, T d7, T d8, T d9) {
+    int32_t siz[2]={9,1};
     T data[]={d1, d2, d3, d4, d5, d6, d7, d8, d9};
     TinyMATWriter_writeMatrixND_rowmajor(mat, name, data, siz, 2);
 }
 template<typename T>
-inline  void TinyMATWriter_writeVecorAsColumn(TinyMATWriterFile* mat, const char* name, T d1, T d2, T d3, T d4, T d5, T d6, T d7, T d8, T d9, T d10) {
-    int32_t siz[2]={1,10};
+inline  void TinyMATWriter_writeVectorAsColumn(TinyMATWriterFile* mat, const char* name, T d1, T d2, T d3, T d4, T d5, T d6, T d7, T d8, T d9, T d10) {
+    int32_t siz[2]={10,1};
     T data[]={d1, d2, d3, d4, d5, d6, d7, d8, d9, d10};
     TinyMATWriter_writeMatrixND_rowmajor(mat, name, data, siz, 2);
 }
@@ -917,54 +932,362 @@ TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeDoubleVector(TinyMATWriterFile*
   */
 TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeStruct(TinyMATWriterFile* mat, const char* name, const std::map<std::string, double>& data);
 
-/*! \brief start to write a struct-element
-    \ingroup tinymatwriter
-
-    \param mat the MAT-file to write into
-    \param name variable name for the new array (max. len: 31 characters)
-    \param fieldnames names of the data-fields that will be written int the struct (max. len per field: 31 characters).
-                      These names have to be in the same order as the write-operations that follow between TinyMATWriter_startStruct()
-                      and TinyMATWriter_endStruct().
-  */
-//TINYMATWRITER_LIB_EXPORT TinyMATWriterStruct* TinyMATWriter_startStruct(TinyMATWriterFile *mat, const char *name, const std::vector<std::string>& fieldnames);
-/*! \brief end to write a struct-element
-    \ingroup tinymatwriter
-
-    \param mat the MAT-file to write into
-    \param name struc the structure object to finish
-  */
-//TINYMATWRITER_LIB_EXPORT void TinyMATWriter_endStruct(TinyMATWriterFile* mat, TinyMATWriterStruct* struc);
-
 
 
 
 /*! \brief start to write a struct-element
-    \ingroup tinymatwriter
+\ingroup tinymatwriter
 
-    \param mat the MAT-file to write into
-    \param name variable name for the new array (max. len: 31 characters)
-  */
+\param mat the MAT-file to write into
+\param name variable name for the new array (max. len: 31 characters)
+*/
 TINYMATWRITER_LIB_EXPORT void TinyMATWriter_startStruct(TinyMATWriterFile *mat, const char *name);
 /*! \brief end to write a struct-element
-    \ingroup tinymatwriter
+\ingroup tinymatwriter
 
-    \param mat the MAT-file to write into
-    \param name struc the structure object to finish
-  */
+\param mat the MAT-file to write into
+\param name struc the structure object to finish
+*/
 TINYMATWRITER_LIB_EXPORT void TinyMATWriter_endStruct(TinyMATWriterFile* mat);
 
 
 
+
+/*! \brief Low-Level-Interface for writing Cell-Arrays: starts a generic Cell-Array
+\ingroup tinymatwriter
+
+\param mat the MAT-file to write into
+\param name variable name for the new array (max. len: 31 characters)
+\param sizes number of entries in each dimension {rows, cols, matrices, ...}
+\param ndims number of dimensions
+
+After a call to this function, simply use any TinyMATWriter-function to write the cell-array
+entires in column-major order with "name" left blanck. Finally close the array by calling 
+TinyMATWriter_endCellArray(). You can nest severall startCellArray/endCellAray-calls.
+
+*/
+TINYMATWRITER_LIB_EXPORT void TinyMATWriter_startCellArray(TinyMATWriterFile *mat, const char *name, const int32_t* sizes, uint32_t ndims);
+
+/*! \brief Low-Level-Interface for writing Cell-Arrays: starts a 1D Cell-Array (column)
+\ingroup tinymatwriter
+
+\param mat the MAT-file to write into
+\param name variable name for the new array (max. len: 31 characters)
+\param nitems number of entries in the vector
+
+
+After a call to this function, simply use any TinyMATWriter-function to write the cell-array
+entries with "name" left blanck. Finally close the array by calling TinyMATWriter_endCellArray().
+You can nest severall startCellArray/endCellAray-calls.
+
+*/
+TINYMATWRITER_LIB_EXPORT inline void TinyMATWriter_startCellVectorAsCol(TinyMATWriterFile *mat, const char *name, int32_t nitems) {
+  int32_t dims[2] = { nitems,1 };
+  TinyMATWriter_startCellArray(mat, name, dims, 2);
+}
+
+/*! \brief Low-Level-Interface for writing Cell-Arrays: starts a 1D Cell-Array (row)
+\ingroup tinymatwriter
+
+\param mat the MAT-file to write into
+\param name variable name for the new array (max. len: 31 characters)
+\param nitems number of entries in the vector
+
+After a call to this function, simply use any TinyMATWriter-function to write the cell-array
+entries with "name" left blanck. Finally close the array by calling TinyMATWriter_endCellArray().
+You can nest severall startCellArray/endCellAray-calls.
+
+*/
+TINYMATWRITER_LIB_EXPORT inline void TinyMATWriter_startCellVectorAsRow(TinyMATWriterFile *mat, const char *name, int32_t nitems) {
+  int32_t dims[2] = { 1,nitems };
+  TinyMATWriter_startCellArray(mat, name, dims, 2);
+}
+
+/*! \brief Low-Level-Interface for writing Cell-Arrays: starts a 2D Cell-Array
+\ingroup tinymatwriter
+
+\param mat the MAT-file to write into
+\param name variable name for the new array (max. len: 31 characters)
+\param cols number of columns in the cell array
+\param rows number of rows in the cell array
+
+After a call to this function, simply use any TinyMATWriter-function to write the cell-array
+entires in column-major order with "name" left blanck. Finally close the array by calling
+TinyMATWriter_endCellArray(). You can nest severall startCellArray/endCellAray-calls.
+
+*/
+TINYMATWRITER_LIB_EXPORT inline void TinyMATWriter_startCellMatrix2D(TinyMATWriterFile *mat, const char *name, int32_t cols, int32_t rows) {
+  int32_t dims[2] = { rows,cols };
+  TinyMATWriter_startCellArray(mat, name, dims, 2);
+}
+
+/*! \brief Low-Level-Interface zum Schrieben von Cell-Arrays: beendet das aktuelle Cell-Array
+\ingroup tinymatwriter
+
+\param mat the MAT-file to write into
+\param name struc the structure object to finish
+*/
+TINYMATWRITER_LIB_EXPORT void TinyMATWriter_endCellArray(TinyMATWriterFile* mat);
+
+
+
 #ifdef TINYMAT_USES_OPENCV
-/*! \brief write a 1-dimensional QVariantList into a MAT-file as a cell array
+/*! \brief write an OpenCV cv::Mat into a MAT-file as a matrix
     \ingroup tinymatwriter
 
     \param mat the MAT-file to write into
     \param name variable name for the new array
-    \param data the array to write
+    \param img the cv::Mat to write
 
   */
 TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeCVMat(TinyMATWriterFile* mat, const char* name, const cv::Mat& img);
+
+/*! \brief write a cv::Vec into a MAT-file as a row vector
+\ingroup tinymatwriter
+
+\param mat the MAT-file to write into
+\param name variable name for the new array
+\param vec the cv::Vec to write
+
+*/
+template <typename T, int cn>
+TINYMATWRITER_LIB_EXPORT inline void TinyMATWriter_writeCVVecAsRow(TinyMATWriterFile* mat, const char* name, const cv::Vec<T, cn>& vec) {
+  TinyMATWriter_writeVectorAsRow<T>(mat, name, vec.val, cn);
+}
+
+/*! \brief write a cv::Vec into a MAT-file as a column vector
+\ingroup tinymatwriter
+
+\param mat the MAT-file to write into
+\param name variable name for the new array
+\param vec the cv::Vec to write
+
+*/
+template <typename T, int cn>
+TINYMATWRITER_LIB_EXPORT inline void TinyMATWriter_writeCVVecAsColumn(TinyMATWriterFile* mat, const char* name, const cv::Vec<T, cn>& vec) {
+  TinyMATWriter_writeVectorAsColumn<T>(mat, name, vec.val, cn);
+}
+
+/*! \brief write a cv::Point_<T> as row-vector
+\ingroup tinymatwriter
+
+\param mat the MAT-file to write into
+\param name variable name for the new array
+\param p the point to write
+
+*/
+template <typename T>
+TINYMATWRITER_LIB_EXPORT inline void TinyMATWriter_writeCVPointAsRow(TinyMATWriterFile* mat, const char* name, const cv::Point_<T>& p) {
+  TinyMATWriter_writeVectorAsRow<T>(mat, name, p.x, p.y);
+}
+
+/*! \brief write a cv::Point_<T> as column-vector
+\ingroup tinymatwriter
+
+\param mat the MAT-file to write into
+\param name variable name for the new array
+\param p the point to write
+
+*/
+template <typename T>
+TINYMATWRITER_LIB_EXPORT inline void TinyMATWriter_writeCVPointAsColumn(TinyMATWriterFile* mat, const char* name, const cv::Point_<T>& p) {
+  TinyMATWriter_writeVectorAsColumn<T>(mat, name, p.x, p.y);
+}
+
+/*! \brief write a cv::Point3_<T> as column-vector
+\ingroup tinymatwriter
+
+\param mat the MAT-file to write into
+\param name variable name for the new array
+\param p the point to write
+
+*/
+template <typename T>
+TINYMATWRITER_LIB_EXPORT inline void TinyMATWriter_writeCVPoint3AsColumn(TinyMATWriterFile* mat, const char* name, const cv::Point3_<T>& p) {
+  TinyMATWriter_writeVectorAsColumn<T>(mat, name, p.x, p.y, p.z);
+}
+
+
+
+/*! \brief write a cv::Point3_<T> as row-vector
+\ingroup tinymatwriter
+
+\param mat the MAT-file to write into
+\param name variable name for the new array
+\param p the point to write
+
+*/
+template <typename T>
+TINYMATWRITER_LIB_EXPORT inline void TinyMATWriter_writeCVPoint3AsRow(TinyMATWriterFile* mat, const char* name, const cv::Point3_<T>& p) {
+  TinyMATWriter_writeVectorAsRow<T>(mat, name, p.x, p.y, p.z);
+}
+
+
+/*! \brief write a cv::Scalar_<T> as column-vector
+\ingroup tinymatwriter
+
+\param mat the MAT-file to write into
+\param name variable name for the new array
+\param p the cv::Scalar_<T> to write
+
+*/
+template <typename T>
+TINYMATWRITER_LIB_EXPORT inline void TinyMATWriter_writeCVScalarAsColumn(TinyMATWriterFile* mat, const char* name, const cv::Scalar_<T>& p) {
+  TinyMATWriter_writeVectorAsColumn<T>(mat, name, p[0], p[1], p[2], p[3]);
+}
+
+
+
+/*! \brief write a cv::Scalar_<T> as row-vector
+\ingroup tinymatwriter
+
+\param mat the MAT-file to write into
+\param name variable name for the new array
+\param p the cv::Scalar_<T> to write
+
+*/
+template <typename T>
+TINYMATWRITER_LIB_EXPORT inline void TinyMATWriter_writeCVScalarAsRow(TinyMATWriterFile* mat, const char* name, const cv::Scalar_<T>& p) {
+  TinyMATWriter_writeVectorAsRow<T>(mat, name, p[0], p[1], p[2], p[3]);
+}
+
+
+/*! \brief write a cv::Size_<T> as row-vector
+\ingroup tinymatwriter
+
+\param mat the MAT-file to write into
+\param name variable name for the new array
+\param p the size-object to write
+
+*/
+template <typename T>
+TINYMATWRITER_LIB_EXPORT inline void TinyMATWriter_writeCVSizeAsRow(TinyMATWriterFile* mat, const char* name, const cv::Size_<T>& p) {
+  TinyMATWriter_writeVectorAsRow<T>(mat, name, p.width, p.height);
+}
+
+/*! \brief write a cv::Size_<T> as column-vector
+\ingroup tinymatwriter
+
+\param mat the MAT-file to write into
+\param name variable name for the new array
+\param p the size-object to write
+
+*/
+template <typename T>
+TINYMATWRITER_LIB_EXPORT inline void TinyMATWriter_writeCVSizeAsColumn(TinyMATWriterFile* mat, const char* name, const cv::Size_<T>& p) {
+  TinyMATWriter_writeVectorAsColumn<T>(mat, name, p.width, p.height);
+}
+
+
+/*! \brief write a cv::Rect_<T> as row-vector \c [x,y,width,height]
+\ingroup tinymatwriter
+
+\param mat the MAT-file to write into
+\param name variable name for the new array
+\param p the rectangle-object to write
+
+*/
+template <typename T>
+TINYMATWRITER_LIB_EXPORT inline void TinyMATWriter_writeCVRectAsRow(TinyMATWriterFile* mat, const char* name, const cv::Rect_<T>& p) {
+  TinyMATWriter_writeVectorAsRow<T>(mat, name, p.x, p.y, p.width, p.height);
+}
+
+/*! \brief write a cv::Rect_<T> as column-vector \c [x;y;width;height]
+\ingroup tinymatwriter
+
+\param mat the MAT-file to write into
+\param name variable name for the new array
+\param p the rectangle-object to write
+
+*/
+template <typename T>
+TINYMATWRITER_LIB_EXPORT inline void TinyMATWriter_writeCVRectAsColumn(TinyMATWriterFile* mat, const char* name, const cv::Rect_<T>& p) {
+  TinyMATWriter_writeVectorAsColumn<T>(mat, name, p.x, p.y, p.width, p.height);
+}
+
+
+
+/*! \brief write a cv::Range as row-vector
+\ingroup tinymatwriter
+
+\param mat the MAT-file to write into
+\param name variable name for the new array
+\param p the Range-object to write
+
+*/
+TINYMATWRITER_LIB_EXPORT inline void TinyMATWriter_writeCVRangeAsRow(TinyMATWriterFile* mat, const char* name, const cv::Range& p) {
+  TinyMATWriter_writeVectorAsRow(mat, name, p.start, p.end);
+}
+
+/*! \brief write a cv::Range as column-vector
+\ingroup tinymatwriter
+
+\param mat the MAT-file to write into
+\param name variable name for the new array
+\param p the rectangle-object to write
+
+*/
+TINYMATWRITER_LIB_EXPORT inline void TinyMATWriter_writeCVRangeAsColumn(TinyMATWriterFile* mat, const char* name, const cv::Range& p) {
+  TinyMATWriter_writeVectorAsColumn(mat, name, p.start, p.end);
+}
+
+
+/*! \brief write a 1-dimensional std::vector of values as a row-vector into a MAT-file
+\ingroup tinymatwriter
+
+This is a performance-optimized specialization.
+
+\param mat the MAT-file to write into
+\param name variable name for the new array
+\param data_vec the array to write. This container has to implement the function size() and
+an iterator with tool-functions begin() and end()
+
+*/
+template <>
+void TinyMATWriter_writeContainerAsRow(TinyMATWriterFile* mat, const char* name, const std::vector<cv::Point2d>& data_vec);
+
+/*! \brief write a 1-dimensional std::vector of values as a row-vector into a MAT-file
+\ingroup tinymatwriter
+
+This is a performance-optimized specialization.
+
+\param mat the MAT-file to write into
+\param name variable name for the new array
+\param data_vec the array to write. This container has to implement the function size() and
+an iterator with tool-functions begin() and end()
+
+*/
+template <>
+void TinyMATWriter_writeContainerAsRow(TinyMATWriterFile* mat, const char* name, const std::vector<cv::Point2i>& data_vec);
+
+/*! \brief write a 1-dimensional std::vector of values as a row-vector into a MAT-file
+\ingroup tinymatwriter
+
+This is a performance-optimized specialization.
+
+\param mat the MAT-file to write into
+\param name variable name for the new array
+\param data_vec the array to write. This container has to implement the function size() and
+an iterator with tool-functions begin() and end()
+
+*/
+template <>
+void TinyMATWriter_writeContainerAsRow(TinyMATWriterFile* mat, const char* name, const std::vector<cv::Point2f>& data_vec);
+
+/*! \brief write a 1-dimensional std::vector of values as a row-vector into a MAT-file
+\ingroup tinymatwriter
+
+This is a performance-optimized specialization.
+
+\param mat the MAT-file to write into
+\param name variable name for the new array
+\param data_vec the array to write. This container has to implement the function size() and
+an iterator with tool-functions begin() and end()
+
+*/
+template <>
+void TinyMATWriter_writeContainerAsRow(TinyMATWriterFile* mat, const char* name, const std::vector<cv::Point2l>& data_vec);
+
 #endif
 
 
