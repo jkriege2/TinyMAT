@@ -8,6 +8,7 @@ project(libTinyMAT LANGUAGES CXX VERSION 2.0.0.0)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake)
 
 find_package(Qt5 COMPONENTS Core REQUIRED)
+find_package(OpenCV)
 
 ######################################################################################################
 # compile options:
@@ -15,7 +16,7 @@ if(NOT DEFINED TinyMAT_FILEBACKEND_USE_MEMORY_CACHE)
     option(TinyMAT_FILEBACKEND_USE_MEMORY_CACHE "Build with a file-backend, that caches the output in memory, before writing to disk (sets TINYMAT_WRITE_VIA_MEMORY when building)" ON)
 endif()
 if(NOT DEFINED TinyMAT_OPENCV_SUPPORT)
-    option(TinyMAT_OPENCV_SUPPORT "Build with Support for OpenCV" OFF)
+    option(TinyMAT_OPENCV_SUPPORT "Build with Support for OpenCV" ${OpenCV_FOUND})
 endif()
 if(NOT DEFINED TinyMAT_QT5_SUPPORT)
     option(TinyMAT_QT5_SUPPORT "Build with Support for Qt5" ${Qt5_FOUND})

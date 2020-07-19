@@ -2,6 +2,11 @@ cmake_minimum_required(VERSION 3.0)
 
 set(EXAMPLE_NAME ${PROJECT_NAME}_test_opencv)
 
+find_package(OpenCV REQUIRED )
+message("OpenCV_INCLUDE_DIRS = ${OpenCV_INCLUDE_DIRS}")
+message("OpenCV_LIBS         = ${OpenCV_LIBS}")
+message("OpenCV_FOUND        = ${OpenCV_FOUND}")
+
 add_executable(${EXAMPLE_NAME}
 	test_opencv_tinymat.cpp
 )
