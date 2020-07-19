@@ -14,6 +14,12 @@ set(HEADERS
 
 include(CMakePackageConfigHelpers)
 
+include(CheckSymbolExists)
+check_symbol_exists(fopen_s "stdio.h" HAVE_FOPEN_S)
+check_symbol_exists(sprintf_s "stdio.h" HAVE_SPRINTF_S)
+check_symbol_exists(memcpy_s "string.h" HAVE_MEMCPY_S)
+check_symbol_exists(gmtime_s "time.h" HAVE_GMTIME_S)
+
 
 if(TinyMAT_BUILD_SHARED_LIBS)
     add_library(${libsh_name} SHARED  ${SOURCES} ${HEADERS})
@@ -25,6 +31,18 @@ if(TinyMAT_BUILD_SHARED_LIBS)
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>  
     )
     set_target_properties(${libsh_name} PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS "ON")
+    if (HAVE_FOPEN_S)
+        target_compile_definitions(${libsh_name} PRIVATE HAVE_FOPEN_S)
+    endif()
+    if (HAVE_SPRINTF_S)
+        target_compile_definitions(${libsh_name} PRIVATE HAVE_SPRINTF_S)
+    endif()
+    if (HAVE_MEMCPY_S)
+        target_compile_definitions(${libsh_name} PRIVATE HAVE_MEMCPY_S)
+    endif()
+    if (HAVE_GMTIME_S)
+        target_compile_definitions(${libsh_name} PRIVATE HAVE_GMTIME_S)
+    endif()
     if(TinyMAT_FILEBACKEND_USE_MEMORY_CACHE)
         target_compile_definitions(${libsh_name} PRIVATE TINYMAT_WRITE_VIA_MEMORY)
     endif()
@@ -51,6 +69,9 @@ if(TinyMAT_BUILD_STATIC_LIBS)
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>  
     )
+    if (HAVE_FOPEN_S)
+        target_compile_definitions(${libsh_name} PRIVATE HAVE_FOPEN_S)
+    endif()
     if(TinyMAT_FILEBACKEND_USE_MEMORY_CACHE)
         target_compile_definitions(${lib_name} PRIVATE TINYMAT_WRITE_VIA_MEMORY)
     endif()

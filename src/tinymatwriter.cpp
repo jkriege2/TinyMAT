@@ -63,6 +63,9 @@
 #define TINYMAT_inlineattrib inline
 #endif
 
+
+
+
 #define TINYMAT_mxCHAR_CLASS_CLASS_arrayflags 0x00000004
 #define TINYMAT_mxDOUBLE_CLASS_arrayflags 0x00000006
 #define TINYMAT_mxSINGLE_CLASS_arrayflags 0x00000007
@@ -246,8 +249,11 @@ int TinyMATWriter_fOK(const TinyMATWriterFile* mat)  {
      //std::cout<<"TinyMAT_fopen()\n";
      //std::cout.flush();
      TinyMATWriterFile* mat=new TinyMATWriterFile;
-
+#ifndef HAVE_FOPEN_S
      if (fopen_s(&(mat->file), filename, "wb+") == 0) {
+#else
+     if ((mat->file=fopen(filename, "wb+")) != NULL) {
+#endif
        if (mat->file) {
          if (bufSize > 0) {
            setvbuf(mat->file, NULL, _IOFBF, bufSize);
@@ -330,7 +336,11 @@ TINYMAT_inlineattrib static int TinyMAT_fwrite(const void* data, uint32_t size, 
        if (file->filedata_current + size*count + 100 >= file->filedata_size) {
          TinyMAT_growMem(size*count, file);
        }
+#ifdef HAVE_MEMCPY_S
        memcpy_s(&(file->filedata[file->filedata_current]), file->filedata_size- file->filedata_current, data, size*count);
+#else
+       memcpy(&(file->filedata[file->filedata_current]), data, size*count);
+#endif
        file->filedata_current = file->filedata_current + size*count;
        file->filedata_count = std::max(file->filedata_count, file->filedata_current);
        res=size*count;
@@ -370,7 +380,11 @@ TINYMAT_inlineattrib static int TinyMAT_fread(void* data, uint32_t size, uint32_
        if (static_cast<uint32_t>(cnt) != size*count) {
          throw std::runtime_error("read after end of file");
        }
+#ifdef HAVE_MEMCPY_S
        memcpy_s(data, size*count, &(file->filedata[file->filedata_current]), cnt);
+#else
+       memcpy(data, &(file->filedata[file->filedata_current]), cnt);
+#endif
        file->filedata_current = file->filedata_current + cnt;
        res = cnt;
 #else
@@ -1162,9 +1176,19 @@ TinyMATWriterFile* TinyMATWriter_open(const char* filename, const char* descript
         for (int i=0; i<512; i++) stdmsg[i]='\0';
         time_t rawtime;
         ::time(&rawtime);
-        struct tm timeinfo;
-        ::gmtime_s(&timeinfo, &rawtime);
-        sprintf_s(stdmsg, 512,"MATLAB 5.0 MAT-file, written by TinyMAT, %d-%02d-%02d %02d:%02d:%02d UTC", 1900+timeinfo.tm_year, timeinfo.tm_mon+1, timeinfo.tm_mday, timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
+        struct tm * timeinfo;
+#ifdef HAVE_GMTIME_S
+        struct tm ti;
+        ::gmtime_s(&ti, &rawtime);
+        timeinfo=&ti;
+#else
+        timeinfo = ::gmtime(&rawtime);
+#endif
+#ifdef HAVE_SPRINTF_S
+        sprintf_s(stdmsg, 512,"MATLAB 5.0 MAT-file, written by TinyMAT, %d-%02d-%02d %02d:%02d:%02d UTC", 1900+timeinfo->tm_year, timeinfo->tm_mon+1, timeinfo->tm_mday, timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec);
+#else
+        sprintf(stdmsg, "MATLAB 5.0 MAT-file, written by TinyMAT, %d-%02d-%02d %02d:%02d:%02d UTC", 1900+timeinfo->tm_year, timeinfo->tm_mon+1, timeinfo->tm_mday, timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec);
+#endif
         size_t slstd=strlen(stdmsg);
         char desc[116];
         size_t sl=0;
