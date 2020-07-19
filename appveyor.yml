@@ -53,9 +53,6 @@ install:
   # Rename sh.exe as sh.exe in PATH interferes with MinGW
   - rename "C:\Program Files\Git\usr\bin\sh.exe" "sh2.exe"
   - cmd: choco install OpenCV
-  - cmd: dir c:\tools\
-  - cmd: dir c:\tools\opencv
-  - cmd: dir c:\tools\opencv\build
   - cmd: set OPENCV_DIR=C:\tools\opencv\build
   
 
@@ -63,7 +60,7 @@ build_script:
   - mkdir build
   - cd build
   - if "%CONFIGURATION%"=="release" (set CMAKE_CONFIGURATION=Release) else (set CMAKE_CONFIGURATION=Debug)
-  - if "%QTABI%"=="mingw53_32" (set OPENCV_USAGE=OFF) else (set OPENCV_USAGE=OFF)
+  - if "%QTABI%"=="mingw53_32" (set OPENCV_USAGE=OFF) else (set OPENCV_USAGE=ON)
   - echo "Call CMake..."
   - cmake --version 
   - cmake -G "%CMAKE_GENERATOR%" "-DCMAKE_PREFIX_PATH=%QT5%" -DOpenCV_DIR=%OPENCV_DIR% -DTinyMAT_QT5_SUPPORT=ON -DTinyMAT_OPENCV_SUPPORT=%OPENCV_USAGE% -DTinyMAT_BUILD_SHARED_LIBS=ON -DTinyMAT_BUILD_STATIC_LIBS=ON  .. 
