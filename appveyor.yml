@@ -60,7 +60,7 @@ build_script:
   - mkdir build
   - cd build
   - if "%CONFIGURATION%"=="release" (set CMAKE_CONFIGURATION=Release) else (set CMAKE_CONFIGURATION=Debug)
-  - if "%QTABI%"=="mingw53_32" (set OPENCV_USAGE=OFF) else (set OPENCV_USAGE=ON)
+  - if "%QTABI%"=="msvc2017_64" (set OPENCV_USAGE=ON) else (set OPENCV_USAGE=OFF)
   - echo "Call CMake..."
   - cmake --version 
   - cmake -G "%CMAKE_GENERATOR%" "-DCMAKE_PREFIX_PATH=%QT5%" -DOpenCV_DIR=%OPENCV_DIR% -DTinyMAT_QT5_SUPPORT=ON -DTinyMAT_OPENCV_SUPPORT=%OPENCV_USAGE% -DTinyMAT_BUILD_SHARED_LIBS=ON -DTinyMAT_BUILD_STATIC_LIBS=ON  .. 

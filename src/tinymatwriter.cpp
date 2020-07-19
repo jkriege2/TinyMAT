@@ -249,7 +249,7 @@ int TinyMATWriter_fOK(const TinyMATWriterFile* mat)  {
      //std::cout<<"TinyMAT_fopen()\n";
      //std::cout.flush();
      TinyMATWriterFile* mat=new TinyMATWriterFile;
-#ifndef HAVE_FOPEN_S
+#ifdef HAVE_FOPEN_S
      if (fopen_s(&(mat->file), filename, "wb+") == 0) {
 #else
      if ((mat->file=fopen(filename, "wb+")) != NULL) {
