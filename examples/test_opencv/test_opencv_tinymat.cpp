@@ -39,33 +39,33 @@ int main( int /*argc*/, const char* /*argv*/[] ) {
 		TinyMATWriter_writeCVVecAsColumn(mat, "vecd_col", vecd);
 		TinyMATWriter_writeCVVecAsRow(mat, "vecd_row", vecd);
 		
-		cv::Point_<int> pnt(-1,-2);
+		cv::Point_<int16_t> pnt(-1,-2);
 		TinyMATWriter_writeCVPointAsColumn(mat, "pnt_col", pnt);
 		TinyMATWriter_writeCVPointAsRow(mat, "pnt_row", pnt);
 		
 		cv::Point3_<uint64_t> pnt3(1,4,8);
-		TinyMATWriter_writeCVPointAsColumn(mat, "pnt3_col", pnt3);
-		TinyMATWriter_writeCVPointAsRow(mat, "pnt3_row", pnt3);
+		TinyMATWriter_writeCVPoint3AsColumn(mat, "pnt3_col", pnt3);
+		TinyMATWriter_writeCVPoint3AsRow(mat, "pnt3_row", pnt3);
 		
 		cv::Scalar_<uint64_t> scal(1,4,8);
 		TinyMATWriter_writeCVScalarAsColumn(mat, "scal_col", scal);
 		TinyMATWriter_writeCVScalarAsRow(mat, "scal_row", scal);
 		
 		cv::Size_<uint8_t> size(0,2);
-		TinyMATWriter_writeCVScalarAsColumn(mat, "siz_col", size);
-		TinyMATWriter_writeCVScalarAsRow(mat, "siz_row", size);
+		TinyMATWriter_writeCVSizeAsColumn(mat, "siz_col", size);
+		TinyMATWriter_writeCVSizeAsRow(mat, "siz_row", size);
 		
 		cv::Rect_<double> rect(0.2,0.3,2.34,3.45);
 		TinyMATWriter_writeCVRectAsColumn(mat, "rect_col", rect);
 		TinyMATWriter_writeCVRectAsRow(mat, "rect_row", rect);
 		
 		cv::Range range(0,2);
-		TinyMATWriter_writeCVPointAsColumn(mat, "range_col", range);
-		TinyMATWriter_writeCVPointAsRow(mat, "range_row", range);
+		TinyMATWriter_writeCVRangeAsColumn(mat, "range_col", range);
+		TinyMATWriter_writeCVRangeAsRow(mat, "range_row", range);
 		
 		std::vector<cv::Point2d> pnts { cv::Point2d(1,2), cv::Point2d(0,0), cv::Point2d(2,1)} ;
-		TinyMATWriter_writeCVPointAsColumn(mat, "pnts_col", pnts);
-		TinyMATWriter_writeCVPointAsRow(mat, "pnts_row", pnts);
+		TinyMATWriter_writeContainerAsRow(mat, "pnts_row", pnts);
+
 
         TinyMATWriter_close(mat);
 	}

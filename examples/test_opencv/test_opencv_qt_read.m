@@ -18,8 +18,5 @@ disp(rect_col);
 disp(rect_row);
 disp(range_col);
 disp(range_row);
-disp(pnts_col);
 disp(pnts_row);
-
-
 

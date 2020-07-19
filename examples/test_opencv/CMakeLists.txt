@@ -26,4 +26,3 @@ install(FILES ${CMAKE_CURRENT_LIST_DIR}/test_opencv_qt_read.m DESTINATION ${CMAK
 
 #Installation of Qt DLLs on Windows
 include(tinymat_deployqt)
-tinymat_deployqt(${EXAMPLE_NAME})
