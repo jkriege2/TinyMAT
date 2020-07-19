@@ -840,10 +840,13 @@ inline  void TinyMATWriter_writeContainerAsColumn(TinyMATWriterFile* mat, const 
     */
   template<typename T>
   inline  void TinyMATWriter_writeContainerAsColumn(TinyMATWriterFile* mat, const char* name, const std::vector<T>& data_vec) {
-      if (data_vec.size()<=0) TinyMATWriter_writeEmptyMatrix(mat, name);
-      int32_t siz[2]={(int32_t)data_vec.size(), 1};
-      const T* tmp=data_vec.data(); 
-      TinyMATWriter_writeMatrixND_rowmajor(mat, name, tmp, siz, 2);
+    if (data_vec.size() <= 0) {
+      TinyMATWriter_writeEmptyMatrix(mat, name);
+      return;
+    } // if
+    int32_t siz[2] = { (int32_t)data_vec.size(), 1 };
+    const T* tmp = data_vec.data();
+    TinyMATWriter_writeMatrixND_rowmajor(mat, name, tmp, siz, 2);
   }
 
   /*! \brief write a 1-dimensional std::vector<bool> of values as a column-vector into a MAT-file
@@ -862,6 +865,72 @@ inline  void TinyMATWriter_writeContainerAsColumn(TinyMATWriterFile* mat, const 
   }
 
 
+  /*! \brief write a std::vector of std::vector (vecor of row-vectors) as a matrix into a MAT-file
+  \ingroup tinymatwriter
+
+  \param mat the MAT-file to write into
+  \param name variable name for the new array
+  \param data_mat the array to write.
+
+  */
+  template<class T>
+  inline  void TinyMATWriter_writeRowsContainerAsMatrix(TinyMATWriterFile* mat, const char* name, const std::vector<std::vector<T> >& data_mat) {
+    if (data_mat.size() <= 0) TinyMATWriter_writeEmptyMatrix(mat, name);
+
+    int32_t rows = data_mat.size();
+    int32_t cols = 0;
+    for (size_t i = 0; i < data_mat.size(); i++) cols = std::max<int32_t>(cols, data_mat[i].size());
+
+    T* tmp = (T*)malloc(rows*cols * sizeof(T));
+    for (int32_t i = 0; i<rows*cols; i++) tmp[i] = 0;
+    int r = 0;
+    int c = 0;
+    for (auto it = data_mat.begin(); it != data_mat.end(); ++it) {
+      c = 0;
+      for (auto itc = it->begin(); itc != it->end(); ++itc) {
+        tmp[c*rows + r] = *itc;
+        c++;
+      }
+      r++;
+    }
+    int32_t siz[2] = { rows, cols };
+    TinyMATWriter_writeMatrixND_colmajor(mat, name, tmp, siz, 2);
+    free(tmp);
+  }
+
+
+  /*! \brief write a std::vector of std::vector (vecor of col-vectors) as a matrix into a MAT-file
+  \ingroup tinymatwriter
+
+  \param mat the MAT-file to write into
+  \param name variable name for the new array
+  \param data_mat the array to write.
+
+  */
+  template<class T>
+  inline  void TinyMATWriter_writeColsContainerAsMatrix(TinyMATWriterFile* mat, const char* name, const std::vector<std::vector<T> >& data_mat) {
+    if (data_mat.size() <= 0) TinyMATWriter_writeEmptyMatrix(mat, name);
+
+    int32_t rows = 0;
+    int32_t cols = data_mat.size();
+    for (size_t i = 0; i < data_mat.size(); i++) rows = std::max<int32_t>(rows, data_mat[i].size());
+
+    T* tmp = (T*)malloc(rows*cols * sizeof(T));
+    for (int32_t i = 0; i<rows*cols; i++) tmp[i] = 0;
+    int r = 0;
+    int c = 0;
+    for (auto it = data_mat.begin(); it != data_mat.end(); ++it) {
+      r = 0;
+      for (auto itc = it->begin(); itc != it->end(); ++itc) {
+        tmp[c*rows + r] = *itc;
+        r++;
+      }
+      c++;
+    }
+    int32_t siz[2] = { rows, cols };
+    TinyMATWriter_writeMatrixND_colmajor(mat, name, tmp, siz, 2);
+    free(tmp);
+  }
 #endif
 
 
