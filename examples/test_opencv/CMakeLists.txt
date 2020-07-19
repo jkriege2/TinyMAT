@@ -12,12 +12,12 @@ add_executable(${EXAMPLE_NAME}
 )
 
 if(TinyMAT_BUILD_STATIC_LIBS)
-    target_link_libraries(${EXAMPLE_NAME} libTinyMAT)
+    target_link_libraries(${EXAMPLE_NAME} PRIVATE libTinyMAT)
 elseif(TinyMAT_BUILD_SHARED_LIBS)
-    target_link_libraries(${EXAMPLE_NAME} libTinyMATShared)
+    target_link_libraries(${EXAMPLE_NAME} PRIVATE libTinyMATShared)
 endif()
-target_include_directories(${EXAMPLE_NAME} ${OpenCV_INCLUDE_DIRS})
-target_link_libraries(${EXAMPLE_NAME} ${OpenCV_LIBS})
+target_include_directories(${EXAMPLE_NAME} PRIVATE ${OpenCV_INCLUDE_DIRS})
+target_link_libraries(${EXAMPLE_NAME} PRIVATE ${OpenCV_LIBS})
 
 
 # Installation
