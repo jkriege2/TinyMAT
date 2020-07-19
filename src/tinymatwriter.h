@@ -50,7 +50,6 @@
 #endif
 
 /*! \defgroup tinymatwriter Tiny Matlab(r) MAT writer library
-    \ingroup tools
 
 \code
     TinyMATWriterFile* mat=TinyMATWriter_open("test.mat");
@@ -88,17 +87,23 @@
    
  */
 
+/*! \defgroup tinymatwriter_qt TinyMATWriter-Support for Qt Datatypes
+    \ingroup tinymatwriter
+
+    Functions in this group allow to directly store Qt-datatypes into MAT-files.
+*/
+/*! \defgroup tinymatwriter_opencv TinyMATWriter-Support for OpenCV Datatypes
+    \ingroup tinymatwriter
+
+    Functions in this group allow to directly store OpenCV-datatypes into MAT-files.
+*/
+
 
 
 /** \brief struct used to describe a TIFF file
   * \ingroup tinymatwriter
   */
 struct TinyMATWriterFile; // forward
-
-/** \brief struct used to reference a struct inside a file
-  * \ingroup tinymatwriter
-  */
-//struct TinyMATWriterStruct; // forward
 
 #ifndef TRUE
 #  define TRUE (0==0)
@@ -1102,7 +1107,7 @@ TINYMATWRITER_LIB_EXPORT void TinyMATWriter_endCellArray(TinyMATWriterFile* mat)
 
 #ifdef TINYMAT_USES_OPENCV
 /*! \brief write an OpenCV cv::Mat into a MAT-file as a matrix
-    \ingroup tinymatwriter
+    \ingroup tinymatwriter_opencv
 
     \param mat the MAT-file to write into
     \param name variable name for the new array
@@ -1112,7 +1117,7 @@ TINYMATWRITER_LIB_EXPORT void TinyMATWriter_endCellArray(TinyMATWriterFile* mat)
 TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeCVMat(TinyMATWriterFile* mat, const char* name, const cv::Mat& img);
 
 /*! \brief write a cv::Vec into a MAT-file as a row vector
-\ingroup tinymatwriter
+\ingroup tinymatwriter_opencv
 
 \param mat the MAT-file to write into
 \param name variable name for the new array
@@ -1125,7 +1130,7 @@ TINYMATWRITER_LIB_EXPORT inline void TinyMATWriter_writeCVVecAsRow(TinyMATWriter
 }
 
 /*! \brief write a cv::Vec into a MAT-file as a column vector
-\ingroup tinymatwriter
+\ingroup tinymatwriter_opencv
 
 \param mat the MAT-file to write into
 \param name variable name for the new array
@@ -1138,7 +1143,7 @@ TINYMATWRITER_LIB_EXPORT inline void TinyMATWriter_writeCVVecAsColumn(TinyMATWri
 }
 
 /*! \brief write a cv::Point_<T> as row-vector
-\ingroup tinymatwriter
+\ingroup tinymatwriter_opencv
 
 \param mat the MAT-file to write into
 \param name variable name for the new array
@@ -1151,7 +1156,7 @@ TINYMATWRITER_LIB_EXPORT inline void TinyMATWriter_writeCVPointAsRow(TinyMATWrit
 }
 
 /*! \brief write a cv::Point_<T> as column-vector
-\ingroup tinymatwriter
+\ingroup tinymatwriter_opencv
 
 \param mat the MAT-file to write into
 \param name variable name for the new array
@@ -1164,7 +1169,7 @@ TINYMATWRITER_LIB_EXPORT inline void TinyMATWriter_writeCVPointAsColumn(TinyMATW
 }
 
 /*! \brief write a cv::Point3_<T> as column-vector
-\ingroup tinymatwriter
+\ingroup tinymatwriter_opencv
 
 \param mat the MAT-file to write into
 \param name variable name for the new array
@@ -1179,7 +1184,7 @@ TINYMATWRITER_LIB_EXPORT inline void TinyMATWriter_writeCVPoint3AsColumn(TinyMAT
 
 
 /*! \brief write a cv::Point3_<T> as row-vector
-\ingroup tinymatwriter
+\ingroup tinymatwriter_opencv
 
 \param mat the MAT-file to write into
 \param name variable name for the new array
@@ -1193,7 +1198,7 @@ TINYMATWRITER_LIB_EXPORT inline void TinyMATWriter_writeCVPoint3AsRow(TinyMATWri
 
 
 /*! \brief write a cv::Scalar_<T> as column-vector
-\ingroup tinymatwriter
+\ingroup tinymatwriter_opencv
 
 \param mat the MAT-file to write into
 \param name variable name for the new array
@@ -1208,7 +1213,7 @@ TINYMATWRITER_LIB_EXPORT inline void TinyMATWriter_writeCVScalarAsColumn(TinyMAT
 
 
 /*! \brief write a cv::Scalar_<T> as row-vector
-\ingroup tinymatwriter
+\ingroup tinymatwriter_opencv
 
 \param mat the MAT-file to write into
 \param name variable name for the new array
@@ -1222,7 +1227,7 @@ TINYMATWRITER_LIB_EXPORT inline void TinyMATWriter_writeCVScalarAsRow(TinyMATWri
 
 
 /*! \brief write a cv::Size_<T> as row-vector
-\ingroup tinymatwriter
+\ingroup tinymatwriter_opencv
 
 \param mat the MAT-file to write into
 \param name variable name for the new array
@@ -1235,7 +1240,7 @@ TINYMATWRITER_LIB_EXPORT inline void TinyMATWriter_writeCVSizeAsRow(TinyMATWrite
 }
 
 /*! \brief write a cv::Size_<T> as column-vector
-\ingroup tinymatwriter
+\ingroup tinymatwriter_opencv
 
 \param mat the MAT-file to write into
 \param name variable name for the new array
@@ -1249,7 +1254,7 @@ TINYMATWRITER_LIB_EXPORT inline void TinyMATWriter_writeCVSizeAsColumn(TinyMATWr
 
 
 /*! \brief write a cv::Rect_<T> as row-vector \c [x,y,width,height]
-\ingroup tinymatwriter
+\ingroup tinymatwriter_opencv
 
 \param mat the MAT-file to write into
 \param name variable name for the new array
@@ -1262,7 +1267,7 @@ TINYMATWRITER_LIB_EXPORT inline void TinyMATWriter_writeCVRectAsRow(TinyMATWrite
 }
 
 /*! \brief write a cv::Rect_<T> as column-vector \c [x;y;width;height]
-\ingroup tinymatwriter
+\ingroup tinymatwriter_opencv
 
 \param mat the MAT-file to write into
 \param name variable name for the new array
@@ -1277,7 +1282,7 @@ TINYMATWRITER_LIB_EXPORT inline void TinyMATWriter_writeCVRectAsColumn(TinyMATWr
 
 
 /*! \brief write a cv::Range as row-vector
-\ingroup tinymatwriter
+\ingroup tinymatwriter_opencv
 
 \param mat the MAT-file to write into
 \param name variable name for the new array
@@ -1289,7 +1294,7 @@ TINYMATWRITER_LIB_EXPORT inline void TinyMATWriter_writeCVRangeAsRow(TinyMATWrit
 }
 
 /*! \brief write a cv::Range as column-vector
-\ingroup tinymatwriter
+\ingroup tinymatwriter_opencv
 
 \param mat the MAT-file to write into
 \param name variable name for the new array
@@ -1302,7 +1307,7 @@ TINYMATWRITER_LIB_EXPORT inline void TinyMATWriter_writeCVRangeAsColumn(TinyMATW
 
 
 /*! \brief write a 1-dimensional std::vector of values as a row-vector into a MAT-file
-\ingroup tinymatwriter
+\ingroup tinymatwriter_opencv
 
 This is a performance-optimized specialization.
 
@@ -1316,7 +1321,7 @@ template <>
 void TinyMATWriter_writeContainerAsRow(TinyMATWriterFile* mat, const char* name, const std::vector<cv::Point2d>& data_vec);
 
 /*! \brief write a 1-dimensional std::vector of values as a row-vector into a MAT-file
-\ingroup tinymatwriter
+\ingroup tinymatwriter_opencv
 
 This is a performance-optimized specialization.
 
@@ -1330,7 +1335,7 @@ template <>
 void TinyMATWriter_writeContainerAsRow(TinyMATWriterFile* mat, const char* name, const std::vector<cv::Point2i>& data_vec);
 
 /*! \brief write a 1-dimensional std::vector of values as a row-vector into a MAT-file
-\ingroup tinymatwriter
+\ingroup tinymatwriter_opencv
 
 This is a performance-optimized specialization.
 
@@ -1344,7 +1349,7 @@ template <>
 void TinyMATWriter_writeContainerAsRow(TinyMATWriterFile* mat, const char* name, const std::vector<cv::Point2f>& data_vec);
 
 /*! \brief write a 1-dimensional std::vector of values as a row-vector into a MAT-file
-\ingroup tinymatwriter
+\ingroup tinymatwriter_opencv
 
 This is a performance-optimized specialization.
 
@@ -1362,7 +1367,7 @@ void TinyMATWriter_writeContainerAsRow(TinyMATWriterFile* mat, const char* name,
 
 #ifdef TINYMAT_USES_QVARIANT
 /*! \brief write a 1-dimensional QVariantList into a MAT-file as a cell array
-    \ingroup tinymatwriter
+    \ingroup tinymatwriter_qt
 
     \param mat the MAT-file to write into
     \param name variable name for the new array
@@ -1371,7 +1376,7 @@ void TinyMATWriter_writeContainerAsRow(TinyMATWriterFile* mat, const char* name,
   */
 TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeQVariantList(TinyMATWriterFile* mat, const char* name, const QVariantList& data);
 /*! \brief write a 1-dimensional QStringList into a MAT-file as a cell array
-    \ingroup tinymatwriter
+    \ingroup tinymatwriter_qt
 
     \param mat the MAT-file to write into
     \param name variable name for the new array
@@ -1380,7 +1385,7 @@ TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeQVariantList(TinyMATWriterFile*
   */
 TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeQStringList(TinyMATWriterFile* mat, const char* name, const QStringList& data);
 /*! \brief write a 1-dimensional QVariantList (as a list of columns) into a MAT-file as a cell array
-    \ingroup tinymatwriter
+    \ingroup tinymatwriter_qt
 
     \param mat the MAT-file to write into
     \param name variable name for the new array
@@ -1389,7 +1394,7 @@ TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeQStringList(TinyMATWriterFile* 
   */
 TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeQVariantMatrix_listofcols(TinyMATWriterFile* mat, const char* name, const QList<QList<QVariant> >& data);
 /*! \brief write a QVariantMap into a MAT-file as a struct
-    \ingroup tinymatwriter
+    \ingroup tinymatwriter_qt
 
     \param mat the MAT-file to write into
     \param name variable name for the new array
