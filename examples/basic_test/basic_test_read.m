@@ -3,9 +3,9 @@ mat1=[1,2;3,4;5,6];
 vec1=[1,2,3,4,5,6,7,8];
 vec2=vec1';
 
-save("-v6", "./test_octave.mat", "vec1", "mat1", "vec2")
+save("-v6", "./basic_test_octave.mat", "vec1", "mat1", "vec2")
 
-load("test.mat", "-v6")
+load("basic_test.mat", "-v6")
 
 
 disp('vector1=')

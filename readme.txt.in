@@ -1,0 +1,20 @@
+=============================================================================
+== @PROJECT_NAME@ 
+==    is a library for generating Matlab 5.0 MAT-files                     ==
+=============================================================================
+
+Library Information:
+  version:                @PROJECT_VERSION@
+  main author/maintainer: Jan Krieger <jan@jkrieger.de>
+  copyright:              (c) 2008-2020 by Jan Krieger
+  license:                GNU LESSER GENERAL PUBLIC LICENSE >= v2.1 (see https://github.com/jkriege2/TinyMAT/LICENSE)
+  repository:             https://github.com/jkriege2/TinyMAT
+  documentation:          http://jkriege2.github.io/TinyMAT/index.html
+
+Build information:
+  used compiler:          @CMAKE_CXX_COMPILER_ID@ @CMAKE_CXX_COMPILER_VERSION@
+  built static libs:      @BUILD_STATIC_LIBS@
+  built shared libs:      @BUILD_SHARED_LIBS@
+  built examples:         @BUILD_EXAMPLES@
+
+

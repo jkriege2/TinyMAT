@@ -31,7 +31,7 @@
 
 /** \brief if defined, files are beeing created in a memory buffer and are only written to disk at the end. 
 *          if undefined, the files are written directly to disk, including move operations on disk, which can be a factor 2-3 slower. */
-#define TINYMAT_WRITE_VIA_MEMORY
+//#define TINYMAT_WRITE_VIA_MEMORY
 
 #ifndef __WINDOWS__
 # if defined(WIN32) || defined(WIN64) || defined(_MSC_VER) || defined(_WIN32)
@@ -367,7 +367,7 @@ TINYMAT_inlineattrib static int TinyMAT_fread(void* data, uint32_t size, uint32_
      int res = 0;
 #ifdef TINYMAT_WRITE_VIA_MEMORY
        int cnt = std::min<int>(size*count, static_cast<int>(file->filedata_size - file->filedata_current));
-       if (cnt != size*count) {
+       if (static_cast<uint32_t>(cnt) != size*count) {
          throw std::runtime_error("read after end of file");
        }
        memcpy_s(data, size*count, &(file->filedata[file->filedata_current]), cnt);
@@ -381,25 +381,25 @@ TINYMAT_inlineattrib static int TinyMAT_fread(void* data, uint32_t size, uint32_
 
 
 
-TINYMAT_inlineattrib static void TinyMAT_write8(TinyMATWriterFile* filen, uint8_t data) {
+TINYMAT_inlineattrib static void TinyMAT_writeU8(TinyMATWriterFile* filen, uint8_t data) {
     TinyMAT_fwritesmall(data, filen);
 }
 TINYMAT_inlineattrib static void TinyMAT_write8(TinyMATWriterFile* filen, int8_t data) {
     TinyMAT_fwritesmall(data, filen);
 }
-TINYMAT_inlineattrib static void TinyMAT_write16(TinyMATWriterFile* filen, uint16_t data) {
+TINYMAT_inlineattrib static void TinyMAT_writeU16(TinyMATWriterFile* filen, uint16_t data) {
     TinyMAT_fwritesmall(data, filen);
 }
 TINYMAT_inlineattrib static void TinyMAT_write16(TinyMATWriterFile* filen, int16_t data) {
     TinyMAT_fwritesmall(data, filen);
 }
-TINYMAT_inlineattrib static void TinyMAT_write32(TinyMATWriterFile* filen, uint32_t data) {
+TINYMAT_inlineattrib static void TinyMAT_writeU32(TinyMATWriterFile* filen, uint32_t data) {
     TinyMAT_fwritesmall(data, filen);
 }
 TINYMAT_inlineattrib static void TinyMAT_write32(TinyMATWriterFile* filen, int32_t data) {
     TinyMAT_fwritesmall(data, filen);
 }
-TINYMAT_inlineattrib static void TinyMAT_write64(TinyMATWriterFile* filen, uint64_t data) {
+TINYMAT_inlineattrib static void TinyMAT_writeU64(TinyMATWriterFile* filen, uint64_t data) {
     TinyMAT_fwritesmall(data, filen);
 }
 TINYMAT_inlineattrib static void TinyMAT_write64(TinyMATWriterFile* filen, int64_t data) {
@@ -413,144 +413,144 @@ TINYMAT_inlineattrib static void TinyMAT_write32f(TinyMATWriterFile* filen, floa
 }
 
 TINYMAT_inlineattrib static void TinyMAT_writeDatElement_u64(TinyMATWriterFile* mat, uint64_t data) {
-    TinyMAT_write32(mat, (uint32_t)TINYMAT_miUINT64);
-    TinyMAT_write32(mat, (uint32_t)sizeof(data));
+    TinyMAT_write32(mat, static_cast<uint32_t>(TINYMAT_miUINT64));
+    TinyMAT_write32(mat, static_cast<uint32_t>(sizeof(data)));
     TinyMAT_write64(mat, data);
 }
 
 TINYMAT_inlineattrib static void TinyMAT_writeDatElement_i64(TinyMATWriterFile* mat, int64_t data) {
-    TinyMAT_write32(mat, (uint32_t)TINYMAT_miINT64);
-    TinyMAT_write32(mat, (uint32_t)sizeof(data));
+    TinyMAT_write32(mat, static_cast<uint32_t>(TINYMAT_miINT64));
+    TinyMAT_write32(mat, static_cast<uint32_t>(sizeof(data)));
     TinyMAT_write64(mat, data);
 }
 
 TINYMAT_inlineattrib static void TinyMAT_writeDatElement_u32(TinyMATWriterFile* mat, uint32_t data) {
-    TinyMAT_write32(mat, (uint32_t)TINYMAT_miUINT32);
-    TinyMAT_write32(mat, (uint32_t)sizeof(data));
+    TinyMAT_write32(mat, static_cast<uint32_t>(TINYMAT_miUINT32));
+    TinyMAT_write32(mat, static_cast<uint32_t>(sizeof(data)));
     TinyMAT_write32(mat, data);
-    TinyMAT_write32(mat, (uint32_t)0); // write padding
+    TinyMAT_write32(mat, static_cast<uint32_t>(0)); // write padding
 }
 
 TINYMAT_inlineattrib static void TinyMAT_writeDatElement_i32(TinyMATWriterFile* mat, int32_t data) {
-    TinyMAT_write32(mat, (uint32_t)TINYMAT_miINT32);
-    TinyMAT_write32(mat, (uint32_t)sizeof(data));
+    TinyMAT_write32(mat, static_cast<uint32_t>(TINYMAT_miINT32));
+    TinyMAT_write32(mat, static_cast<uint32_t>(sizeof(data)));
     TinyMAT_write32(mat, data);
-    TinyMAT_write32(mat, (uint32_t)0); // write padding
+    TinyMAT_write32(mat, static_cast<uint32_t>(0)); // write padding
 }
 
 TINYMAT_inlineattrib static void TinyMAT_writeDatElementS_i32(TinyMATWriterFile* mat, int32_t data) {
-    TinyMAT_write16(mat, (uint16_t)TINYMAT_miINT32);
-    TinyMAT_write16(mat, (uint16_t)sizeof(data));
+    TinyMAT_writeU16(mat, static_cast<uint16_t>(TINYMAT_miINT32));
+    TinyMAT_writeU16(mat, static_cast<uint16_t>(sizeof(data)));
     TinyMAT_write32(mat, data);
 }
 
 TINYMAT_inlineattrib static void TinyMAT_writeDatElement_u16(TinyMATWriterFile* mat, uint16_t data) {
-    TinyMAT_write32(mat, (uint32_t)TINYMAT_miUINT16);
-    TinyMAT_write32(mat, (uint32_t)sizeof(data));
-    TinyMAT_write16(mat, data);
-    TinyMAT_write16(mat, (uint16_t)0); // write padding
-    TinyMAT_write32(mat, (uint32_t)0);
+    TinyMAT_writeU32(mat, static_cast<uint32_t>(TINYMAT_miUINT16));
+    TinyMAT_writeU32(mat, static_cast<uint32_t>(sizeof(data)));
+    TinyMAT_writeU16(mat, data);
+    TinyMAT_writeU16(mat, static_cast<uint16_t>(0)); // write padding
+    TinyMAT_write32(mat, static_cast<uint32_t>(0));
 }
 
 TINYMAT_inlineattrib static void TinyMAT_writeDatElement_i16(TinyMATWriterFile* mat, int16_t data) {
-    TinyMAT_write32(mat, (uint32_t)TINYMAT_miINT16);
-    TinyMAT_write32(mat, (uint32_t)sizeof(data));
+    TinyMAT_writeU32(mat, static_cast<uint32_t>(TINYMAT_miINT16));
+    TinyMAT_writeU32(mat, static_cast<uint32_t>(sizeof(data)));
     TinyMAT_write16(mat, data);
-    TinyMAT_write16(mat, (uint16_t)0); // write padding
-    TinyMAT_write32(mat, (uint32_t)0);
+    TinyMAT_writeU16(mat, static_cast<uint16_t>(0)); // write padding
+    TinyMAT_write32(mat, static_cast<uint32_t>(0));
 }
 
 TINYMAT_inlineattrib static void TinyMAT_writeDatElement_dbl(TinyMATWriterFile* mat, double data) {
-    TinyMAT_write32(mat, (uint32_t)TINYMAT_miDOUBLE);
-    TinyMAT_write32(mat, (uint32_t)sizeof(data));
+    TinyMAT_writeU32(mat, static_cast<uint32_t>(TINYMAT_miDOUBLE));
+    TinyMAT_writeU32(mat, static_cast<uint32_t>(sizeof(data)));
     TinyMAT_write64d(mat, data);
     // no padding required
 }
 TINYMAT_inlineattrib static void TinyMAT_writeDatElement_dbla(TinyMATWriterFile* mat, const double* data, uint32_t items) {
-    TinyMAT_write32(mat, (uint32_t)TINYMAT_miDOUBLE);
+    TinyMAT_writeU32(mat, static_cast<uint32_t>(TINYMAT_miDOUBLE));
     if (!data) items=0;
-    TinyMAT_write32(mat, items*sizeof(*data));
+    TinyMAT_writeU32(mat, items*sizeof(*data));
     if (items>0 && data){
         TinyMAT_fwrite(data, sizeof(*data), items, mat);
     }
     // no padding required
 }
 TINYMAT_inlineattrib static void TinyMAT_writeDatElement_flta(TinyMATWriterFile* mat, const float* data, uint32_t items) {
-    TinyMAT_write32(mat, (uint32_t)TINYMAT_miSINGLE);
+    TinyMAT_writeU32(mat, static_cast<uint32_t>(TINYMAT_miSINGLE));
     if (!data) items=0;
-    TinyMAT_write32(mat, items*sizeof(*data));
+    TinyMAT_writeU32(mat, items*sizeof(*data));
     if (items>0 && data){
         TinyMAT_fwrite(data, sizeof(*data), items, mat);
         // write padding
-        if (items%2==1) TinyMAT_write32(mat, (int32_t)0);
+        if (items%2==1) TinyMAT_write32(mat, static_cast<uint32_t>(0));
     }
 }
 
 TINYMAT_inlineattrib static void TinyMAT_writeDatElement_u32a(TinyMATWriterFile* mat, const uint32_t* data, size_t items) {
-    TinyMAT_write32(mat, (uint32_t)TINYMAT_miUINT32);
-    TinyMAT_write32(mat, (uint32_t)(items*sizeof(*data)));
+    TinyMAT_writeU32(mat, static_cast<uint32_t>(TINYMAT_miUINT32));
+    TinyMAT_writeU32(mat, static_cast<uint32_t>(items*sizeof(*data)));
     if (items>0) {
         TinyMAT_fwrite(data, sizeof(*data), (uint32_t)items, mat);
         // write padding
-        if (items%2==1) TinyMAT_write32(mat, (uint32_t)0);
+        if (items%2==1) TinyMAT_writeU32(mat, static_cast<uint32_t>(0));
     }
 }
 TINYMAT_inlineattrib static void TinyMAT_writeDatElement_i32a(TinyMATWriterFile* mat, const int32_t* data, size_t items) {
-    TinyMAT_write32(mat, (uint32_t)TINYMAT_miINT32);
-    TinyMAT_write32(mat, (uint32_t)(items*sizeof(*data)));
+    TinyMAT_writeU32(mat, static_cast<uint32_t>(TINYMAT_miINT32));
+    TinyMAT_writeU32(mat, static_cast<uint32_t>(items*sizeof(*data)));
     if (items>0) {
         TinyMAT_fwrite(data, sizeof(*data), (uint32_t)items, mat);
         // write padding
-        if (items%2==1) TinyMAT_write32(mat, (int32_t)0);
+        if (items%2==1) TinyMAT_writeU32(mat, static_cast<uint32_t>(0));
     }
 }
 
 TINYMAT_inlineattrib static void TinyMAT_writeDatElement_u16a(TinyMATWriterFile* mat, const uint16_t* data, size_t items) {
-    TinyMAT_write32(mat, (uint32_t)TINYMAT_miUINT16);
-    TinyMAT_write32(mat, (uint32_t)(items*sizeof(*data)));
+    TinyMAT_writeU32(mat, static_cast<uint32_t>(TINYMAT_miUINT16));
+    TinyMAT_writeU32(mat, static_cast<uint32_t>(items*sizeof(*data)));
     if (items>0) {
         TinyMAT_fwrite(data, sizeof(*data), (uint32_t)items, mat);
         // write padding
         if (items%4==1) {
-            TinyMAT_write32(mat, (uint32_t)0);
-            TinyMAT_write16(mat, (uint16_t)0);
+            TinyMAT_writeU32(mat, static_cast<uint32_t>(0));
+            TinyMAT_writeU16(mat, static_cast<uint16_t>(0));
         } else if (items%4==2) {
-            TinyMAT_write32(mat, (uint32_t)0);
+            TinyMAT_write32(mat, static_cast<uint32_t>(0));
         } else if (items%4==3) {
-            TinyMAT_write16(mat, (uint16_t)0);
+            TinyMAT_writeU16(mat, static_cast<uint16_t>(0));
         }
 
     }
 }
 TINYMAT_inlineattrib static void TinyMAT_writeDatElement_i16a(TinyMATWriterFile* mat, const int16_t* data, size_t items) {
-    TinyMAT_write32(mat, (uint32_t)TINYMAT_miINT16);
-    TinyMAT_write32(mat, (uint32_t)(items*sizeof(*data)));
+    TinyMAT_writeU32(mat, static_cast<uint32_t>(TINYMAT_miINT16));
+    TinyMAT_writeU32(mat, static_cast<uint32_t>(items*sizeof(*data)));
     if (items>0) {
         TinyMAT_fwrite(data, sizeof(*data), (uint32_t)items, mat);
         // write padding
         if (items%4==1) {
-            TinyMAT_write32(mat, (uint32_t)0);
-            TinyMAT_write16(mat, (uint16_t)0);
+            TinyMAT_writeU32(mat, static_cast<uint32_t>(0));
+            TinyMAT_writeU16(mat, static_cast<uint16_t>(0));
         } else if (items%4==2) {
-            TinyMAT_write32(mat, (uint32_t)0);
+            TinyMAT_writeU32(mat, static_cast<uint32_t>(0));
         } else if (items%4==3) {
-            TinyMAT_write16(mat, (uint16_t)0);
+            TinyMAT_writeU16(mat, static_cast<uint16_t>(0));
         }
     }
 }
 
 
 TINYMAT_inlineattrib static void TinyMAT_writeDatElement_u64a(TinyMATWriterFile* mat, const uint64_t* data, size_t items) {
-    TinyMAT_write32(mat, (uint32_t)TINYMAT_miUINT64);
-    TinyMAT_write32(mat, (uint32_t)(items*sizeof(*data)));
+    TinyMAT_writeU32(mat, static_cast<uint32_t>(TINYMAT_miUINT64));
+    TinyMAT_writeU32(mat, static_cast<uint32_t>(items*sizeof(*data)));
     if (items>0) {
         TinyMAT_fwrite(data, sizeof(*data), (uint32_t)items, mat);
         // no padding required
     }
 }
 TINYMAT_inlineattrib static void TinyMAT_writeDatElement_i64a(TinyMATWriterFile* mat, const int64_t* data, size_t items) {
-    TinyMAT_write32(mat, (uint32_t)TINYMAT_miINT64);
-    TinyMAT_write32(mat, (uint32_t)(items*sizeof(*data)));
+    TinyMAT_writeU32(mat, static_cast<uint32_t>(TINYMAT_miINT64));
+    TinyMAT_writeU32(mat, static_cast<uint32_t>(items*sizeof(*data)));
     if (items>0) {
         TinyMAT_fwrite(data, sizeof(*data), (uint32_t)items, mat);
         // no padding required
@@ -559,8 +559,8 @@ TINYMAT_inlineattrib static void TinyMAT_writeDatElement_i64a(TinyMATWriterFile*
 TINYMAT_inlineattrib static void TinyMAT_writeDatElement_i8a(TinyMATWriterFile* mat, const int8_t* data, uint32_t slen) {
     size_t pad=(slen)%8;
     uint32_t cla=TINYMAT_miINT8;
-    TinyMAT_write32(mat, cla);
-    TinyMAT_write32(mat, slen);
+    TinyMAT_writeU32(mat, cla);
+    TinyMAT_writeU32(mat, slen);
     if (slen>0 && data) {
         TinyMAT_fwrite(data, 1, slen, mat);
         if (pad>0) {
@@ -573,8 +573,8 @@ TINYMAT_inlineattrib static void TinyMAT_writeDatElement_i8a(TinyMATWriterFile* 
 TINYMAT_inlineattrib static void TinyMAT_writeDatElement_u8a(TinyMATWriterFile* mat, const uint8_t* data, uint32_t slen) {
     size_t pad=(slen)%8;
     uint32_t cla=TINYMAT_miUINT8;
-    TinyMAT_write32(mat, cla);
-    TinyMAT_write32(mat, slen);
+    TinyMAT_writeU32(mat, cla);
+    TinyMAT_writeU32(mat, slen);
     if (slen>0 && data) {
         TinyMAT_fwrite(data, 1, slen, mat);
         if (pad>0) {
@@ -585,7 +585,7 @@ TINYMAT_inlineattrib static void TinyMAT_writeDatElement_u8a(TinyMATWriterFile* 
 }
 
 TINYMAT_inlineattrib static void TinyMAT_writeDatElement_stringas8bit(TinyMATWriterFile* mat, const char* data, uint32_t slen) {
-    TinyMAT_writeDatElement_i8a(mat, (const int8_t*)data, slen);
+    TinyMAT_writeDatElement_i8a(mat, (const int8_t*)(data), slen);
 }
 
 TINYMAT_inlineattrib static void TinyMAT_writeDatElement_string(TinyMATWriterFile* mat, const char* data, uint32_t slen) {
@@ -598,8 +598,8 @@ TINYMAT_inlineattrib static void TinyMAT_writeDatElement_string(TinyMATWriterFil
         }
     }
     uint32_t cla=TINYMAT_miUINT16;
-    TinyMAT_write32(mat, cla);
-    TinyMAT_write32(mat, slen*2);
+    TinyMAT_writeU32(mat, cla);
+    TinyMAT_writeU32(mat, slen*2);
     if (slen>0 && tmp) {
         TinyMAT_fwrite(tmp, 2, slen, mat);
         // write padding
@@ -672,9 +672,9 @@ void TinyMATWriter_writeMatrixND_colmajor(TinyMATWriterFile *mat, const char *na
 
 
         // write tag header
-        TinyMAT_write32(mat, (uint32_t)TINYMAT_miMATRIX);
+        TinyMAT_writeU32(mat, (uint32_t)TINYMAT_miMATRIX);
         long sizepos=TinyMAT_ftell(mat);
-        TinyMAT_write32(mat, size_bytes);
+        TinyMAT_writeU32(mat, size_bytes);
 
         // write arrayflags
         TinyMAT_writeDatElement_u32a(mat, arrayflags, 2);
@@ -691,7 +691,7 @@ void TinyMATWriter_writeMatrixND_colmajor(TinyMATWriterFile *mat, const char *na
         endpos=TinyMAT_ftell(mat);
         TinyMAT_fseek(mat, sizepos);
         size_bytes=endpos-sizepos-4;
-        TinyMAT_write32(mat, size_bytes);
+        TinyMAT_writeU32(mat, size_bytes);
         TinyMAT_fseek(mat, endpos);
     }
 }
@@ -716,9 +716,9 @@ void TinyMATWriter_writeMatrixND_colmajor(TinyMATWriterFile *mat, const char *na
 
 
         // write tag header
-        TinyMAT_write32(mat, (uint32_t)TINYMAT_miMATRIX);
+        TinyMAT_writeU32(mat, (uint32_t)TINYMAT_miMATRIX);
         long sizepos=TinyMAT_ftell(mat);
-        TinyMAT_write32(mat, size_bytes);
+        TinyMAT_writeU32(mat, size_bytes);
 
         // write arrayflags
         TinyMAT_writeDatElement_u32a(mat, arrayflags, 2);
@@ -735,7 +735,7 @@ void TinyMATWriter_writeMatrixND_colmajor(TinyMATWriterFile *mat, const char *na
         endpos=TinyMAT_ftell(mat);
         TinyMAT_fseek(mat, sizepos);
         size_bytes=endpos-sizepos-4;
-        TinyMAT_write32(mat, size_bytes);
+        TinyMAT_writeU32(mat, size_bytes);
         TinyMAT_fseek(mat, endpos);
     }
 }
@@ -760,9 +760,9 @@ void TinyMATWriter_writeMatrixND_colmajor(TinyMATWriterFile *mat, const char *na
 
 
         // write tag header
-        TinyMAT_write32(mat, (uint32_t)TINYMAT_miMATRIX);
+        TinyMAT_writeU32(mat, (uint32_t)TINYMAT_miMATRIX);
         long sizepos=TinyMAT_ftell(mat);
-        TinyMAT_write32(mat, size_bytes);
+        TinyMAT_writeU32(mat, size_bytes);
 
         // write arrayflags
         TinyMAT_writeDatElement_u32a(mat, arrayflags, 2);
@@ -779,7 +779,7 @@ void TinyMATWriter_writeMatrixND_colmajor(TinyMATWriterFile *mat, const char *na
         endpos=TinyMAT_ftell(mat);
         TinyMAT_fseek(mat, sizepos);
         size_bytes=endpos-sizepos-4;
-        TinyMAT_write32(mat, size_bytes);
+        TinyMAT_writeU32(mat, size_bytes);
         TinyMAT_fseek(mat, endpos);
     }
 }
@@ -804,9 +804,9 @@ void TinyMATWriter_writeMatrixND_colmajor(TinyMATWriterFile *mat, const char *na
 
 
         // write tag header
-        TinyMAT_write32(mat, (uint32_t)TINYMAT_miMATRIX);
+        TinyMAT_writeU32(mat, (uint32_t)TINYMAT_miMATRIX);
         long sizepos=TinyMAT_ftell(mat);
-        TinyMAT_write32(mat, size_bytes);
+        TinyMAT_writeU32(mat, size_bytes);
 
         // write arrayflags
         TinyMAT_writeDatElement_u32a(mat, arrayflags, 2);
@@ -823,7 +823,7 @@ void TinyMATWriter_writeMatrixND_colmajor(TinyMATWriterFile *mat, const char *na
         endpos=TinyMAT_ftell(mat);
         TinyMAT_fseek(mat, sizepos);
         size_bytes=endpos-sizepos-4;
-        TinyMAT_write32(mat, size_bytes);
+        TinyMAT_writeU32(mat, size_bytes);
         TinyMAT_fseek(mat, endpos);
     }
 }
@@ -851,9 +851,9 @@ void TinyMATWriter_writeMatrixND_colmajor(TinyMATWriterFile *mat, const char *na
 
 
         // write tag header
-        TinyMAT_write32(mat, (uint32_t)TINYMAT_miMATRIX);
+        TinyMAT_writeU32(mat, (uint32_t)TINYMAT_miMATRIX);
         long sizepos=TinyMAT_ftell(mat);
-        TinyMAT_write32(mat, size_bytes);
+        TinyMAT_writeU32(mat, size_bytes);
 
         // write arrayflags
         TinyMAT_writeDatElement_u32a(mat, arrayflags, 2);
@@ -870,7 +870,7 @@ void TinyMATWriter_writeMatrixND_colmajor(TinyMATWriterFile *mat, const char *na
         endpos=TinyMAT_ftell(mat);
         TinyMAT_fseek(mat, sizepos);
         size_bytes=endpos-sizepos-4;
-        TinyMAT_write32(mat, size_bytes);
+        TinyMAT_writeU32(mat, size_bytes);
         TinyMAT_fseek(mat, endpos);
     }
 }
@@ -895,9 +895,9 @@ void TinyMATWriter_writeMatrixND_colmajor(TinyMATWriterFile *mat, const char *na
 
 
         // write tag header
-        TinyMAT_write32(mat, (uint32_t)TINYMAT_miMATRIX);
+        TinyMAT_writeU32(mat, (uint32_t)TINYMAT_miMATRIX);
         long sizepos=TinyMAT_ftell(mat);
-        TinyMAT_write32(mat, size_bytes);
+        TinyMAT_writeU32(mat, size_bytes);
 
         // write arrayflags
         TinyMAT_writeDatElement_u32a(mat, arrayflags, 2);
@@ -914,7 +914,7 @@ void TinyMATWriter_writeMatrixND_colmajor(TinyMATWriterFile *mat, const char *na
         endpos=TinyMAT_ftell(mat);
         TinyMAT_fseek(mat, sizepos);
         size_bytes=endpos-sizepos-4;
-        TinyMAT_write32(mat, size_bytes);
+        TinyMAT_writeU32(mat, size_bytes);
         TinyMAT_fseek(mat, endpos);
     }
 }
@@ -941,9 +941,9 @@ void TinyMATWriter_writeMatrixND_colmajor(TinyMATWriterFile *mat, const char *na
 
 
         // write tag header
-        TinyMAT_write32(mat, (uint32_t)TINYMAT_miMATRIX);
+        TinyMAT_writeU32(mat, (uint32_t)TINYMAT_miMATRIX);
         long sizepos=TinyMAT_ftell(mat);
-        TinyMAT_write32(mat, size_bytes);
+        TinyMAT_writeU32(mat, size_bytes);
 
         // write arrayflags
         TinyMAT_writeDatElement_u32a(mat, arrayflags, 2);
@@ -960,7 +960,7 @@ void TinyMATWriter_writeMatrixND_colmajor(TinyMATWriterFile *mat, const char *na
         endpos=TinyMAT_ftell(mat);
         TinyMAT_fseek(mat, sizepos);
         size_bytes=endpos-sizepos-4;
-        TinyMAT_write32(mat, size_bytes);
+        TinyMAT_writeU32(mat, size_bytes);
         TinyMAT_fseek(mat, endpos);
     }
 }
@@ -985,9 +985,9 @@ void TinyMATWriter_writeMatrixND_colmajor(TinyMATWriterFile *mat, const char *na
 
 
         // write tag header
-        TinyMAT_write32(mat, (uint32_t)TINYMAT_miMATRIX);
+        TinyMAT_writeU32(mat, (uint32_t)TINYMAT_miMATRIX);
         long sizepos=TinyMAT_ftell(mat);
-        TinyMAT_write32(mat, size_bytes);
+        TinyMAT_writeU32(mat, size_bytes);
 
         // write arrayflags
         TinyMAT_writeDatElement_u32a(mat, arrayflags, 2);
@@ -1004,7 +1004,7 @@ void TinyMATWriter_writeMatrixND_colmajor(TinyMATWriterFile *mat, const char *na
         endpos=TinyMAT_ftell(mat);
         TinyMAT_fseek(mat, sizepos);
         size_bytes=endpos-sizepos-4;
-        TinyMAT_write32(mat, size_bytes);
+        TinyMAT_writeU32(mat, size_bytes);
         TinyMAT_fseek(mat, endpos);
     }
 }
@@ -1032,9 +1032,9 @@ void TinyMATWriter_writeMatrixND_colmajor(TinyMATWriterFile *mat, const char *na
 
 
         // write tag header
-        TinyMAT_write32(mat, (uint32_t)TINYMAT_miMATRIX);
+        TinyMAT_writeU32(mat, (uint32_t)TINYMAT_miMATRIX);
         long sizepos=TinyMAT_ftell(mat);
-        TinyMAT_write32(mat, size_bytes);
+        TinyMAT_writeU32(mat, size_bytes);
 
         // write arrayflags
         TinyMAT_writeDatElement_u32a(mat, arrayflags, 2);
@@ -1051,7 +1051,7 @@ void TinyMATWriter_writeMatrixND_colmajor(TinyMATWriterFile *mat, const char *na
         endpos=TinyMAT_ftell(mat);
         TinyMAT_fseek(mat, sizepos);
         size_bytes=endpos-sizepos-4;
-        TinyMAT_write32(mat, size_bytes);
+        TinyMAT_writeU32(mat, size_bytes);
         TinyMAT_fseek(mat, endpos);
     }
 }
@@ -1076,9 +1076,9 @@ void TinyMATWriter_writeMatrixND_colmajor(TinyMATWriterFile *mat, const char *na
 
 
         // write tag header
-        TinyMAT_write32(mat, (uint32_t)TINYMAT_miMATRIX);
+        TinyMAT_writeU32(mat, (uint32_t)TINYMAT_miMATRIX);
         long sizepos=TinyMAT_ftell(mat);
-        TinyMAT_write32(mat, size_bytes);
+        TinyMAT_writeU32(mat, size_bytes);
 
         // write arrayflags
         TinyMAT_writeDatElement_u32a(mat, arrayflags, 2);
@@ -1095,7 +1095,7 @@ void TinyMATWriter_writeMatrixND_colmajor(TinyMATWriterFile *mat, const char *na
         endpos=TinyMAT_ftell(mat);
         TinyMAT_fseek(mat, sizepos);
         size_bytes=endpos-sizepos-4;
-        TinyMAT_write32(mat, size_bytes);
+        TinyMAT_writeU32(mat, size_bytes);
         TinyMAT_fseek(mat, endpos);
     }
 }
@@ -1120,9 +1120,9 @@ void TinyMATWriter_writeMatrixND_colmajor(TinyMATWriterFile *mat, const char *na
 
 
         // write tag header
-        TinyMAT_write32(mat, (uint32_t)TINYMAT_miMATRIX);
+        TinyMAT_writeU32(mat, (uint32_t)TINYMAT_miMATRIX);
         long sizepos=TinyMAT_ftell(mat);
-        TinyMAT_write32(mat, size_bytes);
+        TinyMAT_writeU32(mat, size_bytes);
 
         // write arrayflags
         TinyMAT_writeDatElement_u32a(mat, arrayflags, 2);
@@ -1146,7 +1146,7 @@ void TinyMATWriter_writeMatrixND_colmajor(TinyMATWriterFile *mat, const char *na
         endpos=TinyMAT_ftell(mat);
         TinyMAT_fseek(mat, sizepos);
         size_bytes=endpos-sizepos-4;
-        TinyMAT_write32(mat, size_bytes);
+        TinyMAT_writeU32(mat, size_bytes);
         TinyMAT_fseek(mat, endpos);
         if (dat) free(dat);
     }
@@ -1197,11 +1197,11 @@ TinyMATWriterFile* TinyMATWriter_open(const char* filename, const char* descript
         TinyMAT_fwrite(desc, 1, 116,mat);
         
         // write "Header Subsystem Data Offset Field" (not used, i.e. write 00000000)
-        TinyMAT_write32(mat, (uint32_t)0x00000000);
-        TinyMAT_write32(mat, (uint32_t)0x00000000);
+        TinyMAT_writeU32(mat, static_cast<uint32_t>(0x00000000));
+        TinyMAT_writeU32(mat, static_cast<uint32_t>(0x00000000));
         
         // write "Header Flag Fields"
-        TinyMAT_write16(mat, (uint16_t)0x0100); // version
+        TinyMAT_writeU16(mat, static_cast<uint16_t>(0x0100)); // version
         TinyMAT_write8(mat, (int8_t)'I'); // endian indicator
         TinyMAT_write8(mat, (int8_t)'M');
         return mat;
@@ -1228,21 +1228,21 @@ void TinyMATWriter_writeDoubleList(TinyMATWriterFile *mat, const char *name, con
     size_bytes+=8+8*(uint32_t)data.size(); // actual data
 
     // write tag header
-    TinyMAT_write32(mat, (uint32_t)TINYMAT_miMATRIX);
-    TinyMAT_write32(mat, size_bytes);
+    TinyMAT_writeU32(mat, (uint32_t)TINYMAT_miMATRIX);
+    TinyMAT_writeU32(mat, size_bytes);
 
     // write arrayflags
     TinyMAT_writeDatElement_u32a(mat, arrayflags, 2);
 
     // write field dimensions
-    TinyMAT_write32(mat, (uint32_t)TINYMAT_miINT32);
-    TinyMAT_write32(mat, (uint32_t)8);
+    TinyMAT_writeU32(mat, static_cast<uint32_t>(TINYMAT_miINT32));
+    TinyMAT_writeU32(mat, (uint32_t)8);
     if (columnVector) {
-        TinyMAT_write32(mat, (uint32_t)1);
-        TinyMAT_write32(mat, (uint32_t)data.size());
+        TinyMAT_writeU32(mat, (uint32_t)1);
+        TinyMAT_writeU32(mat, (uint32_t)data.size());
     } else {
-        TinyMAT_write32(mat, (uint32_t)data.size());
-        TinyMAT_write32(mat, (uint32_t)1);
+        TinyMAT_writeU32(mat, (uint32_t)data.size());
+        TinyMAT_writeU32(mat, (uint32_t)1);
     }
 
     // write field name
@@ -1277,21 +1277,21 @@ void TinyMATWriter_writeDoubleVector(TinyMATWriterFile *mat, const char *name, c
     size_bytes+=8+8*(uint32_t)data.size(); // actual data
 
     // write tag header
-    TinyMAT_write32(mat, (uint32_t)TINYMAT_miMATRIX);
-    TinyMAT_write32(mat, size_bytes);
+    TinyMAT_writeU32(mat, (uint32_t)TINYMAT_miMATRIX);
+    TinyMAT_writeU32(mat, size_bytes);
 
     // write arrayflags
     TinyMAT_writeDatElement_u32a(mat, arrayflags, 2);
 
     // write field dimensions
-    TinyMAT_write32(mat, (uint32_t)TINYMAT_miINT32);
-    TinyMAT_write32(mat, (uint32_t)8);
+    TinyMAT_writeU32(mat, static_cast<uint32_t>(TINYMAT_miINT32));
+    TinyMAT_writeU32(mat, (uint32_t)8);
     if (columnVector) {
-        TinyMAT_write32(mat, (uint32_t)1);
-        TinyMAT_write32(mat, (uint32_t)data.size());
+        TinyMAT_writeU32(mat, (uint32_t)1);
+        TinyMAT_writeU32(mat, (uint32_t)data.size());
     } else {
-        TinyMAT_write32(mat, (uint32_t)data.size());
-        TinyMAT_write32(mat, (uint32_t)1);
+        TinyMAT_writeU32(mat, (uint32_t)data.size());
+        TinyMAT_writeU32(mat, (uint32_t)1);
     }
 
     // write field name
@@ -1329,17 +1329,17 @@ void TinyMATWriter_writeEmptyMatrix(TinyMATWriterFile *mat, const char *name)
   size_bytes += 8 + 8 * 0; // actual data
 
                            // write tag header
-  TinyMAT_write32(mat, (uint32_t)TINYMAT_miMATRIX);
-  TinyMAT_write32(mat, size_bytes);
+  TinyMAT_writeU32(mat, (uint32_t)TINYMAT_miMATRIX);
+  TinyMAT_writeU32(mat, size_bytes);
 
   // write arrayflags
   TinyMAT_writeDatElement_u32a(mat, arrayflags, 2);
 
   // write field dimensions
-  TinyMAT_write32(mat, (uint32_t)TINYMAT_miINT32);
-  TinyMAT_write32(mat, (uint32_t)8);
-  TinyMAT_write32(mat, (uint32_t)0);
-  TinyMAT_write32(mat, (uint32_t)0);
+  TinyMAT_writeU32(mat, static_cast<uint32_t>(TINYMAT_miINT32));
+  TinyMAT_writeU32(mat, (uint32_t)8);
+  TinyMAT_writeU32(mat, static_cast<uint32_t>(0));
+  TinyMAT_writeU32(mat, static_cast<uint32_t>(0));
 
   // write field name
   TinyMAT_writeDatElement_stringas8bit(mat, name);
@@ -1376,17 +1376,17 @@ void TinyMATWriter_writeString(TinyMATWriterFile *mat, const char *name, const c
     size_bytes+=8+(uint32_t)TinyMAT_DatElement_realstringlen16bit(data); // actual data
 
     // write tag header
-    TinyMAT_write32(mat, (uint32_t)TINYMAT_miMATRIX);
-    TinyMAT_write32(mat, size_bytes);
+    TinyMAT_writeU32(mat, (uint32_t)TINYMAT_miMATRIX);
+    TinyMAT_writeU32(mat, size_bytes);
 
     // write arrayflags
     TinyMAT_writeDatElement_u32a(mat, arrayflags, 2);
 
     // write field dimensions
-    TinyMAT_write32(mat, (uint32_t)TINYMAT_miINT32);
-    TinyMAT_write32(mat, (uint32_t)8);
-    TinyMAT_write32(mat, 1);
-    TinyMAT_write32(mat, slen);
+    TinyMAT_writeU32(mat, static_cast<uint32_t>(TINYMAT_miINT32));
+    TinyMAT_writeU32(mat, (uint32_t)8);
+    TinyMAT_writeU32(mat, 1);
+    TinyMAT_writeU32(mat, slen);
 
     // write field name
     TinyMAT_writeDatElement_stringas8bit(mat, name);
@@ -1445,16 +1445,16 @@ void TinyMATWriter_startStruct(TinyMATWriterFile *mat, const char *name) {
 
 
     // write tag header
-    TinyMAT_write32(mat, (uint32_t)TINYMAT_miMATRIX);
+    TinyMAT_writeU32(mat, (uint32_t)TINYMAT_miMATRIX);
     mat->lastStruct().sizepos=TinyMAT_ftell(mat);
-    TinyMAT_write32(mat, size_bytes);
+    TinyMAT_writeU32(mat, size_bytes);
 
     // write arrayflags
     TinyMAT_writeDatElement_u32a(mat, arrayflags, 2);
 
     // write field dimensions
-    TinyMAT_write32(mat, (uint32_t)TINYMAT_miINT32);
-    TinyMAT_write32(mat, (uint32_t)8);
+    TinyMAT_writeU32(mat, static_cast<uint32_t>(TINYMAT_miINT32));
+    TinyMAT_writeU32(mat, (uint32_t)8);
     TinyMAT_write32(mat, (int32_t)1);
     TinyMAT_write32(mat, (int32_t)1);
 
@@ -1502,7 +1502,7 @@ void TinyMATWriter_endStruct(TinyMATWriterFile* mat) {
     long endpos=TinyMAT_ftell(mat);
     TinyMAT_fseek(mat, struc.sizepos);
     uint32_t size_bytes=endpos-struc.sizepos-4;
-    TinyMAT_write32(mat, size_bytes);
+    TinyMAT_writeU32(mat, size_bytes);
     TinyMAT_fseek(mat, endpos);
     mat->endStruct();
 }
@@ -1538,17 +1538,17 @@ void TinyMATWriter_writeStruct(TinyMATWriterFile *mat, const char *name, const s
 
 
     // write tag header
-    TinyMAT_write32(mat, (uint32_t)TINYMAT_miMATRIX);
+    TinyMAT_writeU32(mat, (uint32_t)TINYMAT_miMATRIX);
     long sizepos;
     sizepos=TinyMAT_ftell(mat);
-    TinyMAT_write32(mat, size_bytes);
+    TinyMAT_writeU32(mat, size_bytes);
 
     // write arrayflags
     TinyMAT_writeDatElement_u32a(mat, arrayflags, 2);
 
     // write field dimensions
-    TinyMAT_write32(mat, (uint32_t)TINYMAT_miINT32);
-    TinyMAT_write32(mat, (uint32_t)8);
+    TinyMAT_writeU32(mat, static_cast<uint32_t>(TINYMAT_miINT32));
+    TinyMAT_writeU32(mat, (uint32_t)8);
     TinyMAT_write32(mat, (int32_t)1);
     TinyMAT_write32(mat, (int32_t)1);
 
@@ -1571,7 +1571,7 @@ void TinyMATWriter_writeStruct(TinyMATWriterFile *mat, const char *name, const s
     endpos=TinyMAT_ftell(mat);
     TinyMAT_fseek(mat, sizepos);
     size_bytes=endpos-sizepos-4;
-    TinyMAT_write32(mat, size_bytes);
+    TinyMAT_writeU32(mat, size_bytes);
     TinyMAT_fseek(mat, endpos);
     mat->endStruct();
 }
@@ -1586,9 +1586,9 @@ TINYMATWRITER_LIB_EXPORT void TinyMATWriter_startCellArray(TinyMATWriterFile * m
 
 
   // write tag header
-  TinyMAT_write32(mat, (uint32_t)TINYMAT_miMATRIX);
+  TinyMAT_writeU32(mat, (uint32_t)TINYMAT_miMATRIX);
   mat->lastCell().sizepos = TinyMAT_ftell(mat);
-  TinyMAT_write32(mat, size_bytes);
+  TinyMAT_writeU32(mat, size_bytes);
 
   // write arrayflags
   TinyMAT_writeDatElement_u32a(mat, arrayflags, 2);
@@ -1611,7 +1611,7 @@ TINYMATWRITER_LIB_EXPORT void TinyMATWriter_endCellArray(TinyMATWriterFile * mat
   long endpos = TinyMAT_ftell(mat);
   TinyMAT_fseek(mat, cell.sizepos);
   uint32_t size_bytes = endpos - cell.sizepos - 4;
-  TinyMAT_write32(mat, size_bytes);
+  TinyMAT_writeU32(mat, size_bytes);
   TinyMAT_fseek(mat, endpos);
 
   mat->endCell();
@@ -1625,16 +1625,16 @@ void TinyMATWriter_writeStringList(TinyMATWriterFile *mat, const char *name, con
     uint32_t arrayflags[2]={TINYMAT_mxCELL_CLASS_arrayflags, 0};
 
     // write tag header
-    TinyMAT_write32(mat, (uint32_t)TINYMAT_miMATRIX);
+    TinyMAT_writeU32(mat, (uint32_t)TINYMAT_miMATRIX);
     long sizepos=TinyMAT_ftell(mat);
-    TinyMAT_write32(mat, size_bytes);
+    TinyMAT_writeU32(mat, size_bytes);
 
     // write arrayflags
     TinyMAT_writeDatElement_u32a(mat, arrayflags, 2);
 
     // write field dimensions
-    TinyMAT_write32(mat, (uint32_t)TINYMAT_miINT32);
-    TinyMAT_write32(mat, (uint32_t)8);
+    TinyMAT_writeU32(mat, static_cast<uint32_t>(TINYMAT_miINT32));
+    TinyMAT_writeU32(mat, (uint32_t)8);
     TinyMAT_write32(mat, (int32_t)1);
     TinyMAT_write32(mat, (int32_t)data.size());
 
@@ -1650,7 +1650,7 @@ void TinyMATWriter_writeStringList(TinyMATWriterFile *mat, const char *name, con
     long endpos=TinyMAT_ftell(mat);
     TinyMAT_fseek(mat, sizepos);
     size_bytes=endpos-sizepos-4;
-    TinyMAT_write32(mat, size_bytes);
+    TinyMAT_writeU32(mat, size_bytes);
     TinyMAT_fseek(mat, endpos);
 }
 
@@ -1662,16 +1662,16 @@ void TinyMATWriter_writeStringVector(TinyMATWriterFile *mat, const char *name, c
     uint32_t arrayflags[2]={TINYMAT_mxCELL_CLASS_arrayflags, 0};
 
     // write tag header
-    TinyMAT_write32(mat, (uint32_t)TINYMAT_miMATRIX);
+    TinyMAT_writeU32(mat, (uint32_t)TINYMAT_miMATRIX);
     long sizepos=TinyMAT_ftell(mat);
-    TinyMAT_write32(mat, size_bytes);
+    TinyMAT_writeU32(mat, size_bytes);
 
     // write arrayflags
     TinyMAT_writeDatElement_u32a(mat, arrayflags, 2);
 
     // write field dimensions
-    TinyMAT_write32(mat, (uint32_t)TINYMAT_miINT32);
-    TinyMAT_write32(mat, (uint32_t)8);
+    TinyMAT_writeU32(mat, static_cast<uint32_t>(TINYMAT_miINT32));
+    TinyMAT_writeU32(mat, (uint32_t)8);
     TinyMAT_write32(mat, (int32_t)1);
     TinyMAT_write32(mat, (int32_t)data.size());
 
@@ -1687,7 +1687,7 @@ void TinyMATWriter_writeStringVector(TinyMATWriterFile *mat, const char *name, c
     long endpos=TinyMAT_ftell(mat);
     TinyMAT_fseek(mat, sizepos);
     size_bytes=endpos-sizepos-4;
-    TinyMAT_write32(mat, size_bytes);
+    TinyMAT_writeU32(mat, size_bytes);
     TinyMAT_fseek(mat, endpos);
 }
 
@@ -1704,16 +1704,16 @@ void TinyMATWriter_writeStringVector(TinyMATWriterFile *mat, const char *name, c
 
 
         // write tag header
-        TinyMAT_write32(mat, (uint32_t)TINYMAT_miMATRIX);
+        TinyMAT_writeU32(mat, (uint32_t)TINYMAT_miMATRIX);
         long sizepos=TinyMAT_ftell(mat);
-        TinyMAT_write32(mat, size_bytes);
+        TinyMAT_writeU32(mat, size_bytes);
 
         // write arrayflags
         TinyMAT_writeDatElement_u32a(mat, arrayflags, 2);
 
         // write field dimensions
-        TinyMAT_write32(mat, (uint32_t)TINYMAT_miINT32);
-        TinyMAT_write32(mat, (uint32_t)8);
+        TinyMAT_writeU32(mat, static_cast<uint32_t>(TINYMAT_miINT32));
+        TinyMAT_writeU32(mat, (uint32_t)8);
         TinyMAT_write32(mat, (int32_t)1);
         TinyMAT_write32(mat, (int32_t)data.size());
 
@@ -1759,7 +1759,7 @@ void TinyMATWriter_writeStringVector(TinyMATWriterFile *mat, const char *name, c
         long endpos=TinyMAT_ftell(mat);
         TinyMAT_fseek(mat, sizepos);
         size_bytes=endpos-sizepos-4;
-        TinyMAT_write32(mat, size_bytes);
+        TinyMAT_writeU32(mat, size_bytes);
         TinyMAT_fseek(mat, endpos);
     }
 
@@ -1770,16 +1770,16 @@ void TinyMATWriter_writeStringVector(TinyMATWriterFile *mat, const char *name, c
         uint32_t arrayflags[2]={TINYMAT_mxCELL_CLASS_arrayflags, 0};
 
         // write tag header
-        TinyMAT_write32(mat, (uint32_t)TINYMAT_miMATRIX);
+        TinyMAT_writeU32(mat, (uint32_t)TINYMAT_miMATRIX);
         long sizepos=TinyMAT_ftell(mat);
-        TinyMAT_write32(mat, size_bytes);
+        TinyMAT_writeU32(mat, size_bytes);
 
         // write arrayflags
         TinyMAT_writeDatElement_u32a(mat, arrayflags, 2);
 
         // write field dimensions
-        TinyMAT_write32(mat, (uint32_t)TINYMAT_miINT32);
-        TinyMAT_write32(mat, (uint32_t)8);
+        TinyMAT_writeU32(mat, static_cast<uint32_t>(TINYMAT_miINT32));
+        TinyMAT_writeU32(mat, (uint32_t)8);
         TinyMAT_write32(mat, (int32_t)1);
         TinyMAT_write32(mat, (int32_t)data.size());
 
@@ -1795,7 +1795,7 @@ void TinyMATWriter_writeStringVector(TinyMATWriterFile *mat, const char *name, c
         long endpos=TinyMAT_ftell(mat);
         TinyMAT_fseek(mat, sizepos);
         size_bytes=endpos-sizepos-4;
-        TinyMAT_write32(mat, size_bytes);
+        TinyMAT_writeU32(mat, size_bytes);
         TinyMAT_fseek(mat, endpos);
     }
 
@@ -1815,17 +1815,17 @@ void TinyMATWriter_writeStringVector(TinyMATWriterFile *mat, const char *name, c
 
 
         // write tag header
-        TinyMAT_write32(mat, (uint32_t)TINYMAT_miMATRIX);
+        TinyMAT_writeU32(mat, (uint32_t)TINYMAT_miMATRIX);
         long sizepos;
         sizepos=TinyMAT_ftell(mat);
-        TinyMAT_write32(mat, size_bytes);
+        TinyMAT_writeU32(mat, size_bytes);
 
         // write arrayflags
         TinyMAT_writeDatElement_u32a(mat, arrayflags, 2);
 
         // write field dimensions
-        TinyMAT_write32(mat, (uint32_t)TINYMAT_miINT32);
-        TinyMAT_write32(mat, (uint32_t)8);
+        TinyMAT_writeU32(mat, static_cast<uint32_t>(TINYMAT_miINT32));
+        TinyMAT_writeU32(mat, (uint32_t)8);
         TinyMAT_write32(mat, (int32_t)maxrows);
         TinyMAT_write32(mat, (int32_t)data.size());
 
@@ -1884,7 +1884,7 @@ void TinyMATWriter_writeStringVector(TinyMATWriterFile *mat, const char *name, c
         TinyMAT_fseek(mat, sizepos);
         //fsetpos(mat->file, &sizepos);
         size_bytes=endpos-sizepos-4;
-        TinyMAT_write32(mat, size_bytes);
+        TinyMAT_writeU32(mat, size_bytes);
         TinyMAT_fseek(mat, endpos);
         //fsetpos(mat->file, &endpos);
         //std::cout<<endpos<<" "<<TinyMAT_ftell(mat)<<"\n";
@@ -1920,17 +1920,17 @@ void TinyMATWriter_writeStringVector(TinyMATWriterFile *mat, const char *name, c
 
 
         // write tag header
-        TinyMAT_write32(mat, (uint32_t)TINYMAT_miMATRIX);
+        TinyMAT_writeU32(mat, (uint32_t)TINYMAT_miMATRIX);
         long sizepos;
         sizepos=TinyMAT_ftell(mat);
-        TinyMAT_write32(mat, size_bytes);
+        TinyMAT_writeU32(mat, size_bytes);
 
         // write arrayflags
         TinyMAT_writeDatElement_u32a(mat, arrayflags, 2);
 
         // write field dimensions
-        TinyMAT_write32(mat, (uint32_t)TINYMAT_miINT32);
-        TinyMAT_write32(mat, (uint32_t)8);
+        TinyMAT_writeU32(mat, static_cast<uint32_t>(TINYMAT_miINT32));
+        TinyMAT_writeU32(mat, (uint32_t)8);
         TinyMAT_write32(mat, (int32_t)1);
         TinyMAT_write32(mat, (int32_t)1);
 
@@ -1988,7 +1988,7 @@ void TinyMATWriter_writeStringVector(TinyMATWriterFile *mat, const char *name, c
         endpos=TinyMAT_ftell(mat);
         TinyMAT_fseek(mat, sizepos);
         size_bytes=endpos-sizepos-4;
-        TinyMAT_write32(mat, size_bytes);
+        TinyMAT_writeU32(mat, size_bytes);
         TinyMAT_fseek(mat, endpos);
         mat->endStruct();
     }

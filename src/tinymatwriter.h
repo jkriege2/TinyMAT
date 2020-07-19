@@ -721,7 +721,7 @@ inline  void TinyMATWriter_writeVectorAsColumn(TinyMATWriterFile* mat, const cha
 template<typename T>
 inline  void TinyMATWriter_writeContainerAsRow_internalCopy(TinyMATWriterFile* mat, const char* name, const T& data_vec) {
     int32_t siz[2]={1, (int32_t)data_vec.size()};
-    T::value_type* tmp=(T::value_type*)malloc(data_vec.size()*sizeof(T::value_type));
+    auto tmp=static_cast<typename T::value_type*>(malloc(data_vec.size()*sizeof(typename T::value_type)));
     int i=0;
     for (auto it=data_vec.begin(); it!=data_vec.end(); ++it) {
       tmp[i]=*it;
@@ -748,7 +748,7 @@ inline  void TinyMATWriter_writeContainerAsRow_internalCopy(TinyMATWriterFile* m
 template<typename T>
 inline  void TinyMATWriter_writeContainerAsColumn_internalCopy(TinyMATWriterFile* mat, const char* name, const T& data_vec) {
     int32_t siz[2]={(int32_t)data_vec.size(), 1};
-    T::value_type* tmp=(T::value_type*)malloc(data_vec.size()*sizeof(T::value_type));
+    auto tmp=static_cast<typename T::value_type*>(malloc(data_vec.size()*sizeof(typename T::value_type)));
     int i=0;
     for (auto it=data_vec.begin(); it!=data_vec.end(); ++it) {
       tmp[i]=*it;
@@ -770,7 +770,7 @@ inline  void TinyMATWriter_writeContainerAsColumn_internalCopy(TinyMATWriterFile
   */
 template<typename T>
 inline  void TinyMATWriter_writeContainerAsRow(TinyMATWriterFile* mat, const char* name, const T& data_vec) {
-    TinyMATWriter_writeContainerAsRow_internalCopy(mat, name, data_vec);
+    TinyMATWriter_writeContainerAsRow_internalCopy<T>(mat, name, data_vec);
 }
 
 /*! \brief write a 1-dimensional vector/list/... of values as a column-vector into a MAT-file
@@ -823,7 +823,7 @@ inline  void TinyMATWriter_writeContainerAsColumn(TinyMATWriterFile* mat, const 
     */
   template<>
   inline  void TinyMATWriter_writeContainerAsRow(TinyMATWriterFile* mat, const char* name, const std::vector<bool>& data_vec) {
-      TinyMATWriter_writeContainerAsRow_internalCopy(mat, name, data_vec);
+      TinyMATWriter_writeContainerAsRow_internalCopy<std::vector<bool>>(mat, name, data_vec);
   }
 
   /*! \brief write a 1-dimensional std::vector of values as a column-vector into a MAT-file

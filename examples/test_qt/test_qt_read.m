@@ -10,9 +10,9 @@ strum1.z=43;
 strum1.str="hello World!";
 
 
-save("-v6", "./test_octave.mat", "stri1", "vlis1", "vmat1", "strum1")
+save("-v6", "./test_qt_octave.mat", "stri1", "vlis1", "vmat1", "strum1")
 
-load("test.mat", "-v6")
+load("test_qt.mat", "-v6")
 
 disp(string1);
 disp(vlist1);
