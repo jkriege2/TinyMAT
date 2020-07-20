@@ -48,3 +48,8 @@ if (mat) {
 	TinyMATWriter_close(mat);
 }
 ```
+
+
+Library Bindings:
+* There exists a plugin for the [CImg image processing library](https://cimg.eu/), that uses TinyMATWriter: https://github.com/dtschump/CImg/blob/master/plugins/tinymatwriter.h .
+

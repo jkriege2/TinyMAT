@@ -13,6 +13,10 @@ Some helpful links:
 .
 
 
+Library Bindings:
+  - There exists a plugin for the <a href="https://cimg.eu/">CImg image processing library</a>, that uses TinyTIFFWriter: <a href="https://github.com/dtschump/CImg/blob/master/plugins/tinymatwriter.h">https://github.com/dtschump/CImg/blob/master/plugins/tinymatwriter.h</a>.
+.
+
 
 The following example code writes some arrays and matrices into a MAT-file:
 \code
