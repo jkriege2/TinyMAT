@@ -13,7 +13,7 @@ set(HEADERS
 
 
 include(CMakePackageConfigHelpers)
-
+include(GenerateExportHeader)
 include(CheckSymbolExists)
 check_symbol_exists(fopen_s "stdio.h" HAVE_FOPEN_S)
 check_symbol_exists(sprintf_s "stdio.h" HAVE_SPRINTF_S)
@@ -56,6 +56,14 @@ if(TinyMAT_BUILD_SHARED_LIBS)
         target_compile_definitions(${libsh_name} PUBLIC TINYMAT_USES_QVARIANT)
         target_link_libraries(${libsh_name} PUBLIC Qt5::Core)
     endif()
+
+    generate_export_header(${libsh_name} BASE_NAME tinymatwriter)
+    target_include_directories(${libsh_name} PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+    target_include_directories(${libsh_name} INTERFACE
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+    )
+    target_compile_definitions(${libsh_name} PRIVATE ${libsh_name}_EXPORTS)
 endif()
 
 if(TinyMAT_BUILD_STATIC_LIBS)
@@ -92,6 +100,20 @@ if(TinyMAT_BUILD_STATIC_LIBS)
         target_link_libraries(${lib_name} PUBLIC Qt5::Core)
     endif()
 
+
+    if(NOT TinyMAT_BUILD_SHARED_LIBS)
+      generate_export_header(${lib_name} BASE_NAME tinymatwriter)
+    endif()
+    target_include_directories(${lib_name} INTERFACE
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+    )
+    target_include_directories(${lib_name} PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+    target_include_directories(${lib_name} INTERFACE
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+    )
+    target_compile_definitions(${lib_name} PUBLIC TINYMATWRITER_STATIC_DEFINE)
 endif()
 
 
@@ -134,10 +156,8 @@ if(TinyMAT_BUILD_STATIC_LIBS)
 			DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${lib_name}  )
 endif(TinyMAT_BUILD_STATIC_LIBS)
 
-install(FILES ${HEADERS}
-                DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-		COMPONENT Headers)
-
+install(FILES ${HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} COMPONENT Headers)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/tinymatwriter_export.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
 configure_file(${CMAKE_SOURCE_DIR}/readme.txt.in ${CMAKE_CURRENT_BINARY_DIR}/readme.txt @ONLY)
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/readme.txt" DESTINATION "${TinyMAT_DOC_INSTALL_DIR}/${lib_name}/" )
 install(FILES "${CMAKE_SOURCE_DIR}/LICENSE" DESTINATION "${TinyMAT_DOC_INSTALL_DIR}/${lib_name}/" )

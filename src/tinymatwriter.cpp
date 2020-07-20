@@ -1600,7 +1600,7 @@ void TinyMATWriter_writeStruct(TinyMATWriterFile *mat, const char *name, const s
     mat->endStruct();
 }
 
-TINYMATWRITER_LIB_EXPORT void TinyMATWriter_startCellArray(TinyMATWriterFile * mat, const char * name, const int32_t * sizes, uint32_t ndims)
+void TinyMATWriter_startCellArray(TinyMATWriterFile * mat, const char * name, const int32_t * sizes, uint32_t ndims)
 {
   mat->addStructItemName(name);
   mat->startCell();
@@ -1628,7 +1628,7 @@ TINYMATWRITER_LIB_EXPORT void TinyMATWriter_startCellArray(TinyMATWriterFile * m
 
 }
 
-TINYMATWRITER_LIB_EXPORT void TinyMATWriter_endCellArray(TinyMATWriterFile * mat)
+void TinyMATWriter_endCellArray(TinyMATWriterFile * mat)
 {
   TinyMATWriterCell& cell = mat->lastCell();
 
@@ -2020,7 +2020,7 @@ void TinyMATWriter_writeStringVector(TinyMATWriterFile *mat, const char *name, c
 #endif
 
 #ifdef TINYMAT_USES_OPENCV
-TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeCVMat(TinyMATWriterFile* mat, const char* name, const cv::Mat& img) {
+void TinyMATWriter_writeCVMat(TinyMATWriterFile* mat, const char* name, const cv::Mat& img) {
     if (img.rows<=0 || img.cols<=0) {
       //throw std::runtime_error("OpenCV Matrix has too many dimensions or is empty");
       TinyMATWriter_writeEmptyMatrix(mat, name);
@@ -2050,7 +2050,7 @@ TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeCVMat(TinyMATWriterFile* mat, c
 }
 
 template <>
-TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeContainerAsRow(TinyMATWriterFile* mat, const char* name, const std::vector<cv::Point2d>& data_vec) {
+void TinyMATWriter_writeContainerAsRow(TinyMATWriterFile* mat, const char* name, const std::vector<cv::Point2d>& data_vec) {
   if (data_vec.size() <= 0) TinyMATWriter_writeEmptyMatrix(mat, name);
   int32_t siz[2] = { 2, (int32_t)data_vec.size() };
   double* tmp = (double*)malloc(data_vec.size() * 2 * sizeof(double));
@@ -2066,7 +2066,7 @@ TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeContainerAsRow(TinyMATWriterFil
 }
 
 template <>
-TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeContainerAsRow(TinyMATWriterFile* mat, const char* name, const std::vector<cv::Point2i>& data_vec) {
+void TinyMATWriter_writeContainerAsRow(TinyMATWriterFile* mat, const char* name, const std::vector<cv::Point2i>& data_vec) {
   if (data_vec.size() <= 0) TinyMATWriter_writeEmptyMatrix(mat, name);
   int32_t siz[2] = { 2, (int32_t)data_vec.size() };
   int* tmp = (int*)malloc(data_vec.size() * 2 * sizeof(int));
@@ -2082,7 +2082,7 @@ TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeContainerAsRow(TinyMATWriterFil
 }
 
 template <>
-TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeContainerAsRow(TinyMATWriterFile* mat, const char* name, const std::vector<cv::Point2f>& data_vec) {
+void TinyMATWriter_writeContainerAsRow(TinyMATWriterFile* mat, const char* name, const std::vector<cv::Point2f>& data_vec) {
   if (data_vec.size() <= 0) TinyMATWriter_writeEmptyMatrix(mat, name);
   int32_t siz[2] = { 2, (int32_t)data_vec.size() };
   float* tmp = (float*)malloc(data_vec.size() * 2 * sizeof(float));
@@ -2098,7 +2098,7 @@ TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeContainerAsRow(TinyMATWriterFil
 }
 
 template <>
-TINYMATWRITER_LIB_EXPORT void TinyMATWriter_writeContainerAsRow(TinyMATWriterFile* mat, const char* name, const std::vector<cv::Point2l>& data_vec) {
+void TinyMATWriter_writeContainerAsRow(TinyMATWriterFile* mat, const char* name, const std::vector<cv::Point2l>& data_vec) {
   if (data_vec.size() <= 0) TinyMATWriter_writeEmptyMatrix(mat, name);
   int32_t siz[2] = { 2, (int32_t)data_vec.size() };
   int64_t* tmp = (int64_t*)malloc(data_vec.size() * 2 * sizeof(int64_t));
