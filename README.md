@@ -7,7 +7,7 @@ It is licensed under the terms of the GNU Lesser general Public license (LGPL) >
 
 
 ![Language](https://img.shields.io/github/languages/top/jkriege2/TinyMAT)
-[![Lates Release](https://img.shields.io/github/v/release/jkriege2/JKQtPlotter)](https://github.com/jkriege2/JKQtPlotter/releases)
+[![Lates Release](https://img.shields.io/github/v/release/jkriege2/TinyMAT)](https://github.com/jkriege2/TinyMAT/releases)
 [![Documentation](https://img.shields.io/badge/documentation-online-blue)](http://jkriege2.github.io/TinyMAT/)
 
 
