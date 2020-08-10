@@ -50,6 +50,13 @@ if (mat) {
 ```
 
 
-Library Bindings:
+# Library Bindings
+
 * There exists a plugin for the [CImg image processing library](https://cimg.eu/), that uses TinyMATWriter: https://github.com/dtschump/CImg/blob/master/plugins/tinymatwriter.h .
 
+# Documentation
+
+* library docukentation: https://travis-ci.org/jkriege2/TinyMAT
+** API documentation: http://jkriege2.github.io/TinyMAT/group__tinymatwriter.html
+** build instructions: http://jkriege2.github.io/TinyMAT/page_buildinstructions.html
+** usage instructions:http://jkriege2.github.io/TinyMAT/page_useinstructions.html
