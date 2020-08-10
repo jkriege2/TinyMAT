@@ -57,6 +57,6 @@ if (mat) {
 # Documentation
 
 * library docukentation: https://travis-ci.org/jkriege2/TinyMAT
-** API documentation: http://jkriege2.github.io/TinyMAT/group__tinymatwriter.html
-** build instructions: http://jkriege2.github.io/TinyMAT/page_buildinstructions.html
-** usage instructions:http://jkriege2.github.io/TinyMAT/page_useinstructions.html
+* API documentation: http://jkriege2.github.io/TinyMAT/group__tinymatwriter.html
+* build instructions: http://jkriege2.github.io/TinyMAT/page_buildinstructions.html
+* usage instructions:http://jkriege2.github.io/TinyMAT/page_useinstructions.html
