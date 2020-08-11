@@ -11,6 +11,10 @@ find_package(Qt5 COMPONENTS Core REQUIRED)
 find_package(OpenCV)
 
 ######################################################################################################
+# ensure a build-type is set (Release is default)
+include(tinymat_build_type)
+
+######################################################################################################
 # compile options:
 if(NOT DEFINED TinyMAT_FILEBACKEND_USE_MEMORY_CACHE)
     option(TinyMAT_FILEBACKEND_USE_MEMORY_CACHE "Build with a file-backend, that caches the output in memory, before writing to disk (sets TINYMAT_WRITE_VIA_MEMORY when building)" ON)
