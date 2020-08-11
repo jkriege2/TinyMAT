@@ -12,9 +12,9 @@ add_executable(${EXAMPLE_NAME}
 )
 
 if(TinyMAT_BUILD_STATIC_LIBS)
-    target_link_libraries(${EXAMPLE_NAME} PRIVATE libTinyMAT)
+    target_link_libraries(${EXAMPLE_NAME} PRIVATE TinyMAT)
 elseif(TinyMAT_BUILD_SHARED_LIBS)
-    target_link_libraries(${EXAMPLE_NAME} PRIVATE libTinyMATShared)
+    target_link_libraries(${EXAMPLE_NAME} PRIVATE TinyMATShared)
 endif()
 target_include_directories(${EXAMPLE_NAME} PRIVATE ${OpenCV_INCLUDE_DIRS})
 target_link_libraries(${EXAMPLE_NAME} PRIVATE ${OpenCV_LIBS})
