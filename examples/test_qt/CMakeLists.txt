@@ -9,9 +9,9 @@ add_executable(${EXAMPLE_NAME}
 )
 
 if(TinyMAT_BUILD_STATIC_LIBS)
-    target_link_libraries(${EXAMPLE_NAME} libTinyMAT)
+    target_link_libraries(${EXAMPLE_NAME} TinyMAT)
 elseif(TinyMAT_BUILD_SHARED_LIBS)
-    target_link_libraries(${EXAMPLE_NAME} libTinyMATShared)
+    target_link_libraries(${EXAMPLE_NAME} TinyMATShared)
 endif()
 target_link_libraries(${EXAMPLE_NAME} Qt5::Core)
 

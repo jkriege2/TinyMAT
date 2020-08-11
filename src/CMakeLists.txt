@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 
-set(lib_name "libTinyMAT")
-set(libsh_name "libTinyMATShared")
+set(lib_name "TinyMAT")
+set(libsh_name "TinyMATShared")
 
 # Set up source files
 set(SOURCES
