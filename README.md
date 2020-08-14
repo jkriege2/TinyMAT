@@ -14,6 +14,8 @@ It is licensed under the terms of the GNU Lesser general Public license (LGPL) >
 [![CI: Windows Build](https://img.shields.io/appveyor/ci/jkriege2/TinyMAT/master?label=CI%20Windows%20Build)](https://ci.appveyor.com/project/jkriege2/TinyMAT/branch/master) 
 [![CI: Documentation/Linux/MacOX Build](https://img.shields.io/travis/jkriege2/TinyMAT/master?label=CI%3A%20Documentation%2FLinux%2FMacOX%20Build)](https://travis-ci.org/jkriege2/TinyMAT)
 
+[![Code Quality](https://www.code-inspector.com/project/12236/score/svg) ![Code Grade](https://www.code-inspector.com/project/12236/status/svg)](https://www.code-inspector.com/project/12236/status/svg)
+
 # Example
 The following example code writes some arrays and matrices into a MAT-file:
 ```C++
