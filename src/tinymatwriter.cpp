@@ -24,6 +24,7 @@
 #include <time.h>
 #include <list>
 #include <algorithm>
+#include <stdexcept>
 
 //#include <iostream>
 
@@ -143,11 +144,11 @@ struct TinyMATWriterFile {
     FILE* file;
     /** \brief Zwischenspeicher-Array beim Schreiben von Matlab-Daten */
     uint8_t* filedata;
-    /** \brief Grˆﬂe von filedata */
+    /** \brief Gr√∂√üe von filedata */
     size_t filedata_size;
     /** \brief aktuelle Position in filedata */
     size_t filedata_current;
-    /** \brief tats‰chliche Datenbytes in filedata */
+    /** \brief tats√§chliche Datenbytes in filedata */
     size_t filedata_count;
 
     /** \brief specifies the byte order of the system (and the written file!) */
