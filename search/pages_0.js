@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['build_20instructions_111',['Build Instructions',['../page_buildinstructions.html',1,'']]]
+  ['a_20library_20for_20writing_20matlab_20mat_20files_0',['TinyMAT - A Library for Writing Matlab MAT-files',['../index.html',1,'']]]
 ];

@@ -6,7 +6,7 @@ var group__tinymatwriter =
     [ "TinyMATWriter_endCellArray", "group__tinymatwriter.html#gaf1e1a23c3b65ee3300a508de7f282c00", null ],
     [ "TinyMATWriter_endStruct", "group__tinymatwriter.html#gad1111b96ebecbf256e2f1ea6de2ccca7", null ],
     [ "TinyMATWriter_fOK", "group__tinymatwriter.html#gadc9e11acf479815bc137fe1cc0bbf249", null ],
-    [ "TinyMATWriter_open", "group__tinymatwriter.html#ga121fb1ae5ca7dc30d88deb0b207d813d", null ],
+    [ "TinyMATWriter_open", "group__tinymatwriter.html#ga31124933459043cb7bbb849792cd63bc", null ],
     [ "TinyMATWriter_startCellArray", "group__tinymatwriter.html#ga58481ed51d3b7923b3ea6d9f8576a24f", null ],
     [ "TinyMATWriter_startCellMatrix2D", "group__tinymatwriter.html#ga57561f2622c46a0a78bc3a6b3d4c756d", null ],
     [ "TinyMATWriter_startCellVectorAsCol", "group__tinymatwriter.html#ga36cc6ce1ce318f477c74e88891e811d0", null ],

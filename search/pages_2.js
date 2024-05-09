@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['usage_2flinking_20instructions_113',['Usage/Linking Instructions',['../page_useinstructions.html',1,'']]]
+  ['files_0',['TinyMAT - A Library for Writing Matlab MAT-files',['../index.html',1,'']]],
+  ['for_20writing_20matlab_20mat_20files_1',['TinyMAT - A Library for Writing Matlab MAT-files',['../index.html',1,'']]]
 ];

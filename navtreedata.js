@@ -38,7 +38,7 @@ var NAVTREE =
     [ "Usage/Linking Instructions", "page_useinstructions.html", [
       [ "Use TinyMAT without CMake", "page_useinstructions.html#page_buildinstructions_NOCMAKE", null ]
     ] ],
-    [ "Modules", "modules.html", "modules" ]
+    [ "Topics", "topics.html", "topics" ]
   ] ]
 ];
 
