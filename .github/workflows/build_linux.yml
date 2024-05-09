@@ -1,0 +1,73 @@
+name: BUILD-LINUX-CI
+
+on: [push, pull_request]
+
+permissions:
+  checks: write
+  
+jobs:
+  ci:
+    if: >-
+      ! contains(toJSON(github.event.commits.*.message), '[skip ci]') &&
+      ! contains(toJSON(github.event.commits.*.message), '[skip github]')
+    name: LINUX-CI
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {gen: Unix Makefiles, shared: ON, ccompiler: gcc, cxxcompiler: g++}
+          - {gen: Unix Makefiles, shared: OFF, ccompiler: gcc, cxxcompiler: g++}
+          - {gen: Unix Makefiles, shared: ON, ccompiler: clang, cxxcompiler: clang++}
+          - {gen: Unix Makefiles, shared: OFF, ccompiler: clang, cxxcompiler: clang++}
+    steps:
+    - name: checkout
+      uses: actions/checkout@v4
+    - name: Configure
+      run: |
+        mkdir install
+        cmake -G "${{matrix.gen}}" -DBUILD_SHARED_LIBS=${{matrix.shared}} "-DCMAKE_INSTALL_PREFIX=./install" -DCMAKE_CXX_COMPILER=${{matrix.cxxcompiler}} -DCMAKE_C_COMPILER=${{matrix.ccompiler}} -B build
+    - name: Build Release
+      run: |
+           cmake --build build --config Release --verbose           
+    - name: Install Release
+      run: |
+        cmake --install build --config Release
+        cd install
+        ls -R
+    - name: Build Debug
+      run: |
+           cmake -G "${{matrix.gen}}" -DCMAKE_BUILD_TYPE=Debug -DBUILD_SHARED_LIBS=${{matrix.shared}} "-DTinyMAT_BUILD_EXAMPLES=OFF" -DCMAKE_CXX_COMPILER=${{matrix.cxxcompiler}} -DCMAKE_C_COMPILER=${{matrix.ccompiler}} -DCMAKE_CXX_FLAGS_DEBUG:STRING="-Wall" -DCMAKE_C_FLAGS_DEBUG:STRING="-Wall" -B build_debug
+           cmake --build build_debug --config Debug --verbose           
+    - name: Test CMake-build against TinyMAT
+      run: |
+        cd examples
+        cd extcmake_tinymat_test
+        mkdir build
+        cd build
+        cmake -G "${{matrix.gen}}" "-DCMAKE_PREFIX_PATH=${{github.workspace}}/install/" -DCMAKE_CXX_COMPILER=${{matrix.cxxcompiler}} -DCMAKE_C_COMPILER=${{matrix.ccompiler}} -B . -S ..
+        cmake --build . --config Release --verbose  
+#    - name: Test CMake-build against TinyMAT, using FetchContent-API
+#      if: success() || failure() # always run even if the previous step fails
+#      run: |
+#        cd examples
+#        cd extcmake_fetchcontent_tinytiff_test
+#        mkdir build 
+#        cd build
+#        cmake -G "${{matrix.gen}}" -DCMAKE_CXX_COMPILER=${{matrix.cxxcompiler}} -DCMAKE_C_COMPILER=${{matrix.ccompiler}} -B . -S ..
+#        cmake --build . --config Release --verbose  
+
+#    - name: Run Release tests
+#      run: |
+#        cd install
+#        cd bin
+#        pwd
+#        ls 
+#        export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${{github.workspace}}/install/lib/
+#        ./tinytiffwriter_test --simple
+#        ./tinytiffreader_test --simple
+#    - name: Publish Test Report
+#      uses: mikepenz/action-junit-report@v4
+#      if: success() || failure() # always run even if the previous step fails
+#      with:
+#        report_paths: '**/install/bin/*.xml'

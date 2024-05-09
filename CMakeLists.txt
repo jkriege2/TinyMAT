@@ -1,14 +1,12 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.10)
 
 ######################################################################################################
 # Project Name and Version
-project(libTinyMAT LANGUAGES CXX VERSION 2.1.0.0)
+project(libTinyMAT LANGUAGES CXX VERSION 3.0.0.0)
 
 # set search path for CMake files
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake)
 
-find_package(Qt5 COMPONENTS Core REQUIRED)
-find_package(OpenCV)
 
 ######################################################################################################
 # ensure a build-type is set (Release is default)
@@ -20,9 +18,11 @@ if(NOT DEFINED TinyMAT_FILEBACKEND_USE_MEMORY_CACHE)
     option(TinyMAT_FILEBACKEND_USE_MEMORY_CACHE "Build with a file-backend, that caches the output in memory, before writing to disk (sets TINYMAT_WRITE_VIA_MEMORY when building)" ON)
 endif()
 if(NOT DEFINED TinyMAT_OPENCV_SUPPORT)
+    find_package(OpenCV)
     option(TinyMAT_OPENCV_SUPPORT "Build with Support for OpenCV" ${OpenCV_FOUND})
 endif()
 if(NOT DEFINED TinyMAT_QT5_SUPPORT)
+    find_package(Qt5 COMPONENTS Core REQUIRED)
     option(TinyMAT_QT5_SUPPORT "Build with Support for Qt5" ${Qt5_FOUND})
 endif()
 if(NOT DEFINED TinyMAT_BUILD_SHARED_LIBS)
