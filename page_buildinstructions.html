@@ -129,7 +129,7 @@ Building with MinGW/GNU/... Makefiles</h3>
 <p>You can use (MinGW) Makefiles by calling:</p>
 <div class="fragment"><div class="line">$ mkdir build</div>
 <div class="line">$ cd build</div>
-<div class="line">$ cmake .. -G &quot;MinGW Makefiles&quot; &quot;-DCMAKE_PREFIX_PATH=&lt;path_to_your_qt_sources&gt;&quot; -DTinyMAT_QT5_SUPPORT=ON -DTinyMAT_OPENCV_SUPPORT=ON -DTinyMAT_BUILD_SHARED_LIBS=ON -DTinyMAT_BUILD_STATIC_LIBS=ON</div>
+<div class="line">$ cmake .. -G &quot;MinGW Makefiles&quot; &quot;-DCMAKE_PREFIX_PATH=&lt;path_to_your_qt_sources&gt;&quot; -DTinyMAT_QT_SUPPORT=ON -DTinyMAT_OPENCV_SUPPORT=ON -DBUILD_SHARED_LIBS=ON</div>
 <div class="line">$ cmake --build . --config &quot;Debug&quot;</div>
 <div class="line">$ cmake --build . --config &quot;Debug&quot; --target install</div>
 </div><!-- fragment --><p>Note that we set several compiler options on the first run of cmake. The options are describe in detail below in <a class="el" href="page_buildinstructions.html#page_buildinstructions_CMAKE_CONFIG">Configuring a Build with CMake</a> .</p>
@@ -144,10 +144,9 @@ Building with Visual Studio</h3>
 Configuring a Build with CMake</h2>
 <p>The CMake build system offers several configuration variables that you may set/change to modify the outcome of the build:</p><ul>
 <li><code>CMAKE_PREFIX_PATH</code> : add the path to your Qt installatrion to this variable, so the <code>find_package(Qt5...)</code> commands find the libraries you want to use</li>
-<li><code>TinyMAT_BUILD_SHARED_LIBS</code> : Build as shared library (default: <code>ON</code> )</li>
-<li><code>TinyMAT_BUILD_STATIC_LIBS</code> : Build as static library (default: <code>OFF</code> )</li>
+<li><code>BUILD_SHARED_LIBS</code> : Build as static library (default: <code>OFF</code> )</li>
 <li><code>TinyMAT_BUILD_DECORATE_LIBNAMES_WITH_BUILDTYPE</code> : If set, the build-type is appended to the library name (default: <code>ON</code> )</li>
-<li><code>TinyMAT_QT5_SUPPORT</code> : build with support for Qt5 datatypes ... you'll need to make sure that Qt5 can be found on your system, e.g. by providing <code>CMAKE_PREFIX_PATH=</code> &lt;path_to_your_qt_sources&gt;</li>
+<li><code>TinyMAT_QT_SUPPORT</code> : build with support for Qt5/6 datatypes ... you'll need to make sure that Qt5/6 can be found on your system, e.g. by providing <code>CMAKE_PREFIX_PATH=</code> &lt;path_to_your_qt_sources&gt;</li>
 <li><code>TinyMAT_OPENCV_SUPPORT</code> : enables support for OpenCV ... you'll need to make sure that Open can be found on your system, e.g. by providing <code>CMAKE_PREFIX_PATH=</code> &lt;path_to_your_opencv_sources&gt;</li>
 <li><code>TinyMAT_BUILD_EXAMPLES</code> : Build examples (default: <code>ON</code> )</li>
 <li><code>CMAKE_INSTALL_PREFIX</code> : Install directory for the library</li>
@@ -158,7 +157,7 @@ Configuring a Build with CMake</h2>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Tue May 21 2024 08:50:58 for TinyMAT by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+    <li class="footer">Generated on Tue May 21 2024 09:36:23 for TinyMAT by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
 </body>

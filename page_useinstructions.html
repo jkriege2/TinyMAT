@@ -109,38 +109,57 @@ $(document).ready(function(){initNavTree('page_useinstructions.html',''); initRe
 </div><!--header-->
 <div class="contents">
 <div class="toc"><h3>Table of Contents</h3>
-<ul><li class="level1"><a href="#page_buildinstructions_NOCMAKE">Use TinyMAT without CMake</a></li>
+<ul><li class="level1"><a href="#page_useinstructions_CMAKE">Use TinyMAT with CMake</a></li>
+<li class="level1"><a href="#page_useinstructions_CMAKE_FETCHCONTENT">Use TinyMAT with CMake &amp; FetchCotent-API</a></li>
+<li class="level1"><a href="#page_useinstructions_NOCMAKE">Use TinyMAT without CMake</a></li>
 </ul>
 </div>
 <div class="textblock"><p>This page explains how to link against TinyMAT.</p>
-<p>After building and installing TinyMAT you have all files that you need inside the instal directory:</p><ul>
-<li><code></code> &lt;INSTALLDIR&gt;/include contains all required header files</li>
-<li><code></code> &lt;INSTALLDIR&gt;/bin contains the shared libraries</li>
-<li><code></code> &lt;INSTALLDIR&gt;/lib contains the link libraries</li>
-<li><code></code> &lt;INSTALLDIR&gt;/lib/cmake contains files necessary for CMake's <code><a class="el" href="group__tinymatwriter.html#gac54720c12a448c7b61913b267b917aed" title="write a 1-dimensional vector/list/... of values as a row-vector into a MAT-file">find_package()</a></code> to work</li>
-</ul>
-<h1><a class="anchor" id="page_buildinstructions_CMAKE"></a>
-Build using CMake</h1>
-<p>When using CMake to build you application, you can simply use <code><a class="el" href="group__tinymatwriter.html#gac54720c12a448c7b61913b267b917aed" title="write a 1-dimensional vector/list/... of values as a row-vector into a MAT-file">target_link_libraries()</a></code> to link against TinyMAT and use CMake's <code><a class="el" href="group__tinymatwriter.html#gac54720c12a448c7b61913b267b917aed" title="write a 1-dimensional vector/list/... of values as a row-vector into a MAT-file">find_package()</a></code> to enable that (see <a href="https://github.com/jkriege2/TinyMAT/tree/master/examples/extcmake_tinymat_test">https://github.com/jkriege2/TinyMAT/tree/master/examples/extcmake_tinymat_test</a> for an example):</p>
-<div class="fragment"><div class="line">project(extcmake_tinymat_test CXX)</div>
-<div class="line">cmake_minimum_required(VERSION 3.0)</div>
+<h1><a class="anchor" id="page_useinstructions_CMAKE"></a>
+Use TinyMAT with CMake</h1>
+<p>When using CMake to build your application, you can simply use <code><a class="el" href="group__tinymatwriter.html#gac54720c12a448c7b61913b267b917aed" title="write a 1-dimensional vector/list/... of values as a row-vector into a MAT-file">target_link_libraries()</a></code> to link against TinyMAT and use CMake's <code><a class="el" href="group__tinymatwriter.html#gac54720c12a448c7b61913b267b917aed" title="write a 1-dimensional vector/list/... of values as a row-vector into a MAT-file">find_package()</a></code> to enable that (see <a href="https://github.com/jkriege2/TinyMAT/tree/master/tests/extcmake_tinyMAT_test">https://github.com/jkriege2/TinyMAT/tree/master/tests/extcmake_tinyMAT_test</a> for an example):</p>
+<div class="fragment"><div class="line">cmake_minimum_required(VERSION 3.10)</div>
 <div class="line"> </div>
-<div class="line">set(EXAMPLE_NAME extcmake_tinymat_test)</div>
+<div class="line">project(extcmake_tinyMAT_test CXX)</div>
 <div class="line"> </div>
-<div class="line"># if you built with CMake and Qt5 support, you also need to include these packages</div>
-<div class="line">find_package(Qt5 COMPONENTS Core REQUIRED)</div>
-<div class="line">find_package(OpenCV)</div>
-<div class="line"> </div>
-<div class="line"># now find TinyMAT</div>
-<div class="line">find_package(TinyMAT REQUIRED)</div>
+<div class="line"># find TinyMAT library</div>
+<div class="line">find_package(TinyMAT)</div>
 <div class="line"> </div>
 <div class="line"># add an executable</div>
-<div class="line">add_executable(${EXAMPLE_NAME} extcmake_tinymat_test.cpp)</div>
+<div class="line">add_executable(${PROJECT_NAME}</div>
+<div class="line">  extcmake_tinyMAT_test.cpp</div>
+<div class="line">)</div>
 <div class="line"> </div>
 <div class="line"># link against TinyMAT</div>
-<div class="line">target_link_libraries(${EXAMPLE_NAME} TinyMAT)</div>
-</div><!-- fragment --><p>Note that you may have to provide the CMake variables <code>TinyMAT_DIR</code> (or <code>TinyMATShared_DIR<code></code>)</code> to <code></code> &lt;INSTALLDIR&gt;/lib/cmake/TinyMAT so CMake finds the <code>TinyMATConfig.cmake</code> file there.</p>
-<h1><a class="anchor" id="page_buildinstructions_NOCMAKE"></a>
+<div class="line">target_link_libraries(${PROJECT_NAME} TinyMAT::TinyMAT)</div>
+</div><!-- fragment --><dl class="section note"><dt>Note</dt><dd>Note that you may have to provide CMake with search pathes to find the library, e.g. set <code>TinyMAT_DIR</code> to <code></code> &lt;INSTALLDIR&gt;/lib/cmake/TinyMAT so CMake finds the <code>TinyMATConfig.cmake</code> file there.</dd></dl>
+<h1><a class="anchor" id="page_useinstructions_CMAKE_FETCHCONTENT"></a>
+Use TinyMAT with CMake &amp; FetchCotent-API</h1>
+<p>When using CMake to build your application, you can also use CMake's FetchContent-API to download and include TinyMAT (see <a href="https://github.com/jkriege2/TinyMAT/tree/master/tests/extcmake_fetchcontent_tinyMAT_test">https://github.com/jkriege2/TinyMAT/tree/master/tests/extcmake_fetchcontent_tinyMAT_test</a> for an example and <a href="https://cmake.org/cmake/help/latest/module/FetchContent.html">https://cmake.org/cmake/help/latest/module/FetchContent.html</a> for documentation on FetchContent):</p>
+<div class="fragment"><div class="line"># set minimum required CMake-Version</div>
+<div class="line">cmake_minimum_required(VERSION 3.23)</div>
+<div class="line"> </div>
+<div class="line"># set Project name</div>
+<div class="line">project(extcmake_fetchcontent_tinyMAT_test LANGUAGES CXX)</div>
+<div class="line"> </div>
+<div class="line"># include TinyMAT via FetchContent-API:</div>
+<div class="line"># ... first load the FetchContent-API:</div>
+<div class="line">include(FetchContent) # once in the project to include the module</div>
+<div class="line"># ... now declare TinyMAT</div>
+<div class="line">FetchContent_Declare(TinyMAT</div>
+<div class="line">                     GIT_REPOSITORY https://github.com/jkriege2/TinyMAT.git</div>
+<div class="line">                     # GIT_TAG        3.1.0.0</div>
+<div class="line">                     )</div>
+<div class="line">                     </div>
+<div class="line"># ... finally make TinyMAT available</div>
+<div class="line">FetchContent_MakeAvailable(TinyMAT)</div>
+<div class="line"> </div>
+<div class="line">add_executable(${PROJECT_NAME}</div>
+<div class="line">  extcmake_fetchcontent_tinyMAT_test.cpp</div>
+<div class="line">)</div>
+<div class="line"> </div>
+<div class="line">target_link_libraries(${PROJECT_NAME} TinyMAT::TinyMAT)</div>
+</div><!-- fragment --><h1><a class="anchor" id="page_useinstructions_NOCMAKE"></a>
 Use TinyMAT without CMake</h1>
 <p>You can also link against TinyMAT without using CMake. For this you simply have to supply the library as a parameter to your compile/link run, e.g. for GCC:</p>
 <div class="fragment"><div class="line">$ g++ main.cpp -o out -I&lt;INSTALLDIR&gt;/include -L&lt;INSTALLDIR&gt;/lib -lTinyMAT_Release</div>
@@ -152,7 +171,7 @@ Use TinyMAT without CMake</h1>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Tue May 21 2024 08:50:58 for TinyMAT by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+    <li class="footer">Generated on Tue May 21 2024 09:36:23 for TinyMAT by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
 </body>

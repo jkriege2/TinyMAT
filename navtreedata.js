@@ -36,7 +36,9 @@ var NAVTREE =
       ] ]
     ] ],
     [ "Usage/Linking Instructions", "page_useinstructions.html", [
-      [ "Use TinyMAT without CMake", "page_useinstructions.html#page_buildinstructions_NOCMAKE", null ]
+      [ "Use TinyMAT with CMake", "page_useinstructions.html#page_useinstructions_CMAKE", null ],
+      [ "Use TinyMAT with CMake & FetchCotent-API", "page_useinstructions.html#page_useinstructions_CMAKE_FETCHCONTENT", null ],
+      [ "Use TinyMAT without CMake", "page_useinstructions.html#page_useinstructions_NOCMAKE", null ]
     ] ],
     [ "Topics", "topics.html", "topics" ]
   ] ]
