@@ -16,8 +16,6 @@
 
 
 */
-#include <math.h>
-#include <float.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -614,9 +612,9 @@ TINYMAT_inlineattrib static void TinyMAT_writeDatElement_stringas8bit(TinyMATWri
 
 TINYMAT_inlineattrib static void TinyMAT_writeDatElement_string(TinyMATWriterFile* mat, const char* data, uint32_t slen) {
     size_t pad=(2*slen)%8;
-    int16_t* tmp=NULL;
+    std::unique_ptr<int16_t[]> tmp;
     if (slen>0 && data) {
-        tmp=(int16_t*)malloc(slen*2);
+        tmp=std::unique_ptr<int16_t[]>(new int16_t[slen]);
         for (uint32_t i=0; i<slen; i++) {
             tmp[i]=data[i];
         }
@@ -625,7 +623,7 @@ TINYMAT_inlineattrib static void TinyMAT_writeDatElement_string(TinyMATWriterFil
     TinyMAT_writeU32(mat, cla);
     TinyMAT_writeU32(mat, slen*2);
     if (slen>0 && tmp) {
-        TinyMAT_fwrite(tmp, 2, slen, mat);
+        TinyMAT_fwrite(tmp.get(), 2, slen, mat);
         // write padding
         if (pad>0) {
           static const uint8_t paddata[8] = { 0,0,0,0,0,0,0,0 };
@@ -634,8 +632,6 @@ TINYMAT_inlineattrib static void TinyMAT_writeDatElement_string(TinyMATWriterFil
     } else {
 
     }
-    if (tmp) free(tmp);
-
 }
 
 TINYMAT_inlineattrib static void TinyMAT_writeDatElement_stringas8bit(TinyMATWriterFile* mat, const char* data) {
@@ -1158,21 +1154,22 @@ void TinyMATWriter_writeMatrixND_colmajor(TinyMATWriterFile *mat, const char *na
         TinyMAT_writeDatElement_stringas8bit(mat, name);
 
         // write data type
-        int8_t* dat=NULL;
+        std::unique_ptr<int8_t[]> tmp;
         if (nentries>0) {
-            dat=(int8_t*)malloc(nentries*sizeof(int8_t*));
-            for (uint32_t i=0; i<nentries; i++) {
-                dat[i]=(data_real[i]?1:0);
+            tmp=std::unique_ptr<int8_t[]>(new int8_t[nentries]);
+            if (tmp) {
+                for (uint32_t i=0; i<nentries; i++) {
+                    tmp[i]=(data_real[i]?1:0);
+                }
             }
         }
-        TinyMAT_writeDatElement_i8a(mat, dat, nentries);
+        TinyMAT_writeDatElement_i8a(mat, tmp.get(), nentries);
         long endpos;
         endpos=TinyMAT_ftell(mat);
         TinyMAT_fseek(mat, sizepos);
         size_bytes=endpos-sizepos-4;
         TinyMAT_writeU32(mat, size_bytes);
         TinyMAT_fseek(mat, endpos);
-        if (dat) free(dat);
     }
 }
 
@@ -1282,19 +1279,20 @@ void TinyMATWriter_writeDoubleList(TinyMATWriterFile *mat, const char *name, con
     // write field name
     TinyMAT_writeDatElement_stringas8bit(mat, name);
 
-    double * d=NULL;
+    std::unique_ptr<double[]> d;
     if (data.size()>0) {
-        d=(double*)malloc(data.size()*sizeof(double));
-        int i=0;
-        for (std::list<double>::const_iterator it=data.begin(); it!=data.end(); it++) {
-            d[i]=*it;
-            i++;
+        d=std::unique_ptr<double[]>(new double[data.size()]);
+        if (d) {
+            int i=0;
+            for (std::list<double>::const_iterator it=data.begin(); it!=data.end(); it++) {
+                d[i]=*it;
+                i++;
+            }
         }
     }
 
     // write data type
-    TinyMAT_writeDatElement_dbla(mat, d, (uint32_t)data.size());
-    if (d) free(d);
+    TinyMAT_writeDatElement_dbla(mat, d.get(), (uint32_t)data.size());
 }
 
 
@@ -1331,19 +1329,20 @@ void TinyMATWriter_writeDoubleVector(TinyMATWriterFile *mat, const char *name, c
     // write field name
     TinyMAT_writeDatElement_stringas8bit(mat, name);
 
-    double * d=NULL;
+    std::unique_ptr<double[]> d;
     if (data.size()>0) {
-        d=(double*)malloc(data.size()*sizeof(double));
-        int i=0;
-        for (std::vector<double>::const_iterator it=data.begin(); it!=data.end(); it++) {
-            d[i]=*it;
-            i++;
+        d=std::unique_ptr<double[]>(new double[data.size()]);
+        if (d) {
+            int i=0;
+            for (std::vector<double>::const_iterator it=data.begin(); it!=data.end(); it++) {
+                d[i]=*it;
+                i++;
+            }
         }
     }
 
     // write data type
-    TinyMAT_writeDatElement_dbla(mat, d, (uint32_t)data.size());
-    if (d) free(d);
+    TinyMAT_writeDatElement_dbla(mat, d.get(), (uint32_t)data.size());
 }
 
 
@@ -1512,9 +1511,9 @@ void TinyMATWriter_endStruct(TinyMATWriterFile* mat) {
 
     long start=TinyMAT_ftell(mat);
     long ssize=start-struc.data_start;
-    uint8_t* tmpdata=(uint8_t*)malloc(ssize*sizeof(uint8_t));
+    auto tmpdata=std::unique_ptr<uint8_t[]>(new uint8_t[ssize]);
     TinyMAT_fseek(mat, struc.data_start);
-    TinyMAT_fread(tmpdata, ssize, 1, mat);
+    TinyMAT_fread(tmpdata.get(), ssize, 1, mat);
 
 
     int32_t maxlen=0;
@@ -1528,9 +1527,8 @@ void TinyMATWriter_endStruct(TinyMATWriterFile* mat) {
     // write field names
     TinyMAT_writeDatElement_stringas8bit(mat, joinednames.c_str(), (uint32_t)joinednames.size());
     
-    TinyMAT_fwrite(tmpdata, ssize, 1, mat);
+    TinyMAT_fwrite(tmpdata.get(), ssize, 1, mat);
 
-    free(tmpdata);
 
 
     long endpos=TinyMAT_ftell(mat);

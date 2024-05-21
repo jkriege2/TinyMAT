@@ -758,14 +758,13 @@ inline  void TinyMATWriter_writeContainerAsRow_internalCopy(TinyMATWriterFile* m
 template<typename T>
 inline  void TinyMATWriter_writeContainerAsColumn_internalCopy(TinyMATWriterFile* mat, const char* name, const T& data_vec) {
     int32_t siz[2]={(int32_t)data_vec.size(), 1};
-    auto tmp=static_cast<typename T::value_type*>(malloc(data_vec.size()*sizeof(typename T::value_type)));
+    auto tmp=std::unique_ptr<typename T::value_type[]>(new typename T::value_type[data_vec.size()]);
     int i=0;
     for (auto it=data_vec.begin(); it!=data_vec.end(); ++it) {
       tmp[i]=*it;
       i++;
     }
-    TinyMATWriter_writeMatrixND_rowmajor(mat, name, tmp, siz, 2);
-    free(tmp);
+    TinyMATWriter_writeMatrixND_rowmajor(mat, name, tmp.get(), siz, 2);
 }
 
 
