@@ -19,7 +19,7 @@ You can use (MinGW) Makefiles by calling:
 \code{.sh}
     $ mkdir build
     $ cd build
-    $ cmake .. -G "MinGW Makefiles" "-DCMAKE_PREFIX_PATH=<path_to_your_qt_sources>" -DTinyMAT_QT5_SUPPORT=ON -DTinyMAT_OPENCV_SUPPORT=ON -DTinyMAT_BUILD_SHARED_LIBS=ON -DTinyMAT_BUILD_STATIC_LIBS=ON
+    $ cmake .. -G "MinGW Makefiles" "-DCMAKE_PREFIX_PATH=<path_to_your_qt_sources>" -DTinyMAT_QT_SUPPORT=ON -DTinyMAT_OPENCV_SUPPORT=ON -DBUILD_SHARED_LIBS=ON
     $ cmake --build . --config "Debug"
     $ cmake --build . --config "Debug" --target install
 \endcode
@@ -47,10 +47,9 @@ Afterwards you can install the library by
 
 The CMake build system offers several configuration variables that you may set/change to modify the outcome of the build:
   - \c CMAKE_PREFIX_PATH : add the path to your Qt installatrion to this variable, so the \c find_package(Qt5...) commands find the libraries you want to use
-  - \c TinyMAT_BUILD_SHARED_LIBS : Build as shared library (default: \c ON )
-  - \c TinyMAT_BUILD_STATIC_LIBS : Build as static library (default: \c OFF )
+  - \c BUILD_SHARED_LIBS : Build as static library (default: \c OFF )
   - \c TinyMAT_BUILD_DECORATE_LIBNAMES_WITH_BUILDTYPE : If set, the build-type is appended to the library name (default: \c ON )
-  - \c TinyMAT_QT5_SUPPORT : build with support for Qt5 datatypes ... you'll need to make sure that Qt5 can be found on your system, e.g. by providing \c CMAKE_PREFIX_PATH=<path_to_your_qt_sources>
+  - \c TinyMAT_QT_SUPPORT : build with support for Qt5/6 datatypes ... you'll need to make sure that Qt5/6 can be found on your system, e.g. by providing \c CMAKE_PREFIX_PATH=<path_to_your_qt_sources>
   - \c TinyMAT_OPENCV_SUPPORT : enables support for OpenCV ... you'll need to make sure that Open can be found on your system, e.g. by providing \c CMAKE_PREFIX_PATH=<path_to_your_opencv_sources>
   - \c TinyMAT_BUILD_EXAMPLES : Build examples (default: \c ON )
   - \c CMAKE_INSTALL_PREFIX : Install directory for the library

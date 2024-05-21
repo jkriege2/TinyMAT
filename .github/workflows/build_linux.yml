@@ -49,17 +49,17 @@ jobs:
         cd extcmake_tinymat_test
         mkdir build
         cd build
-        cmake -G "${{matrix.gen}}" "-DCMAKE_PREFIX_PATH=${{github.workspace}}/install/" -DCMAKE_CXX_COMPILER=${{matrix.cxxcompiler}} -DCMAKE_C_COMPILER=${{matrix.ccompiler}} -B . -S ..
+        cmake -G "${{matrix.gen}}" "-DCMAKE_PREFIX_PATH=${{github.workspace}}/install/" -DCMAKE_CXX_COMPILER=${{matrix.cxxcompiler}} -B . -S ..
         cmake --build . --config Release --verbose  
-#    - name: Test CMake-build against TinyMAT, using FetchContent-API
-#      if: success() || failure() # always run even if the previous step fails
-#      run: |
-#        cd examples
-#        cd extcmake_fetchcontent_tinytiff_test
-#        mkdir build 
-#        cd build
-#        cmake -G "${{matrix.gen}}" -DCMAKE_CXX_COMPILER=${{matrix.cxxcompiler}} -DCMAKE_C_COMPILER=${{matrix.ccompiler}} -B . -S ..
-#        cmake --build . --config Release --verbose  
+    - name: Test CMake-build against TinyMAT, using FetchContent-API
+      if: success() || failure() # always run even if the previous step fails
+      run: |
+        cd examples
+        cd extcmake_fetchcontent_tinymat_test
+        mkdir build 
+        cd build
+        cmake -G "${{matrix.gen}}" -DCMAKE_CXX_COMPILER=${{matrix.cxxcompiler}} -B . -S ..
+        cmake --build . --config Release --verbose  
 
 #    - name: Run Release tests
 #      run: |

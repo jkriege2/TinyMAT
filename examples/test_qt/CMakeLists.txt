@@ -1,19 +1,13 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.10)
 
 set(EXAMPLE_NAME ${PROJECT_NAME}_qt_test)
-
-find_package(Qt5 COMPONENTS Core REQUIRED)
 
 add_executable(${EXAMPLE_NAME}
 	test_tinymat.cpp
 )
 
-if(TinyMAT_BUILD_STATIC_LIBS)
-    target_link_libraries(${EXAMPLE_NAME} TinyMAT)
-elseif(TinyMAT_BUILD_SHARED_LIBS)
-    target_link_libraries(${EXAMPLE_NAME} TinyMATShared)
-endif()
-target_link_libraries(${EXAMPLE_NAME} Qt5::Core)
+target_link_libraries(${EXAMPLE_NAME} TinyMAT::TinyMAT)
+target_link_libraries(${EXAMPLE_NAME} Qt${QT_VERSION_MAJOR}::Core)
 
 
 # Installation

@@ -3,45 +3,66 @@
 \page page_useinstructions Usage/Linking Instructions
 
 This page explains how to link against TinyMAT.
-
-
-After building and installing TinyMAT you have all files that you need inside the instal directory:
-  - \c <INSTALLDIR>/include contains all required header files
-  - \c <INSTALLDIR>/bin contains the shared libraries
-  - \c <INSTALLDIR>/lib contains the link libraries
-  - \c <INSTALLDIR>/lib/cmake contains files necessary for CMake's \c find_package() to work
 .
 
 \tableofcontents
 
 
-\section page_buildinstructions_CMAKE Use TinyMAT with CMake
-When using CMake to build you application, you can simply use \c target_link_libraries() to link against TinyMAT and use CMake's \c find_package() to enable that (see https://github.com/jkriege2/TinyMAT/tree/master/examples/extcmake_tinymat_test for an example):
+\section page_useinstructions_CMAKE Use TinyMAT with CMake
+When using CMake to build your application, you can simply use \c target_link_libraries() to link against TinyMAT and use CMake's \c find_package() to enable that (see https://github.com/jkriege2/TinyMAT/tree/master/tests/extcmake_tinyMAT_test for an example):
 
 \code{.cmake}
-project(extcmake_tinymat_test CXX)
-cmake_minimum_required(VERSION 3.0)
+  cmake_minimum_required(VERSION 3.10)
 
-set(EXAMPLE_NAME extcmake_tinymat_test)
+  project(extcmake_tinyMAT_test CXX)
 
-# if you built with CMake and Qt5 support, you also need to include these packages
-find_package(Qt5 COMPONENTS Core REQUIRED)
-find_package(OpenCV)
+  # find TinyMAT library
+  find_package(TinyMAT)
 
-# now find TinyMAT
-find_package(TinyMAT REQUIRED)
+  # add an executable
+  add_executable(${PROJECT_NAME}
+    extcmake_tinyMAT_test.cpp
+  )
 
-# add an executable
-add_executable(${EXAMPLE_NAME} extcmake_tinymat_test.cpp)
-
-# link against TinyMAT
-target_link_libraries(${EXAMPLE_NAME} TinyMAT)
-
+  # link against TinyMAT
+  target_link_libraries(${PROJECT_NAME} TinyMAT::TinyMAT)
 \endcode
 
-Note that you may have to provide the CMake variables \c TinyMAT_DIR (or \c TinyMATShared_DIR\c ) to \c <INSTALLDIR>/lib/cmake/TinyMAT so CMake finds the \c TinyMATConfig.cmake file there.
+\note Note that you may have to provide CMake with search pathes to find the library, e.g. set \c TinyMAT_DIR to \c <INSTALLDIR>/lib/cmake/TinyMAT so CMake finds the \c TinyMATConfig.cmake file there.
 
-\section page_buildinstructions_NOCMAKE Use TinyMAT without CMake
+
+
+\section page_useinstructions_CMAKE_FETCHCONTENT Use TinyMAT with CMake & FetchCotent-API
+When using CMake to build your application, you can also use CMake's FetchContent-API to download and include TinyMAT (see https://github.com/jkriege2/TinyMAT/tree/master/tests/extcmake_fetchcontent_tinyMAT_test for an example and https://cmake.org/cmake/help/latest/module/FetchContent.html for documentation on FetchContent):
+
+\code{.cmake}
+  # set minimum required CMake-Version
+  cmake_minimum_required(VERSION 3.23)
+
+  # set Project name
+  project(extcmake_fetchcontent_tinyMAT_test LANGUAGES CXX)
+
+  # include TinyMAT via FetchContent-API:
+  # ... first load the FetchContent-API:
+  include(FetchContent) # once in the project to include the module
+  # ... now declare TinyMAT
+  FetchContent_Declare(TinyMAT
+                       GIT_REPOSITORY https://github.com/jkriege2/TinyMAT.git
+                       # GIT_TAG        3.1.0.0
+                       )
+                       
+  # ... finally make TinyMAT available
+  FetchContent_MakeAvailable(TinyMAT)
+
+  add_executable(${PROJECT_NAME}
+    extcmake_fetchcontent_tinyMAT_test.cpp
+  )
+
+  target_link_libraries(${PROJECT_NAME} TinyMAT::TinyMAT)
+\endcode
+
+
+\section page_useinstructions_NOCMAKE Use TinyMAT without CMake
 You can also link against TinyMAT without using CMake. For this you simply have to supply the library as a parameter to your compile/link run, e.g. for GCC:
 
 \code{.sh}
@@ -51,6 +72,7 @@ You can also link against TinyMAT without using CMake. For this you simply have 
 The \c -I -option provides the search directory for include-files (i.e. headers) and the \c -L -option the search path for the link libraries. Here we link against the release version \c TinyMAT_Release, i.e. with config-decorated filename (see build options!). Check for the actual name of the libs on your system and plug in the appropriate name! If you build the library as a shared lib, you have to link e.g. against \c TinyMATShared_Release, as the build-scripts add the word \c hared to the library name for shared libs to distinguish them from the static libs.
 
 Note that you might also have to provide additional libraries, depending on your system. 
+
 
 
 */

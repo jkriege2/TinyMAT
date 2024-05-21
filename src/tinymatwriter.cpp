@@ -29,6 +29,7 @@
 //#include <iostream>
 
 #include "tinymatwriter.h"
+#include "tinymat_version.h"
 
 /** \brief if defined, files are beeing created in a memory buffer and are only written to disk at the end. 
 *          if undefined, the files are written directly to disk, including move operations on disk, which can be a factor 2-3 slower. */
@@ -245,6 +246,14 @@ int TinyMATWriter_fOK(const TinyMATWriterFile* mat)  {
      delete file;
      return ret;
  }
+ 
+ 
+const char *TinyMATWriter_getVersion()
+{
+    static char tmp[]=TINYMAT_FULLVERSION;
+    return tmp;
+}
+
 
  TINYMAT_inlineattrib static TinyMATWriterFile* TinyMAT_fopen(const char* filename, size_t bufSize=1024*100) {
      //std::cout<<"TinyMAT_fopen()\n";
