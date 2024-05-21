@@ -384,12 +384,14 @@ inline void TinyMATWriter_writeMatrixND_rowmajor(TinyMATWriterFile* mat, const c
               freeDat=false;
             } else {
               dat=new T[nentries];//(T*)malloc(nentries*sizeof(T));
-              datOut=dat;
-              freeDat=true;
-              for (uint32_t m=0; m<nmatrices; m++) {
-                  for(uint32_t r=0; r<rows; r++) {
-                      for (uint32_t c=0; c<cols; c++) {
-                          dat[m*cols*rows+c*rows+r]=data_real[m*cols*rows+r*cols+c];
+              if (dat) {
+                  datOut=dat;
+                  freeDat=true;
+                  for (uint32_t m=0; m<nmatrices; m++) {
+                      for(uint32_t r=0; r<rows; r++) {
+                          for (uint32_t c=0; c<cols; c++) {
+                              dat[m*cols*rows+c*rows+r]=data_real[m*cols*rows+r*cols+c];
+                          }
                       }
                   }
               }
@@ -732,13 +734,15 @@ template<typename T>
 inline  void TinyMATWriter_writeContainerAsRow_internalCopy(TinyMATWriterFile* mat, const char* name, const T& data_vec) {
     int32_t siz[2]={1, (int32_t)data_vec.size()};
     auto tmp=static_cast<typename T::value_type*>(malloc(data_vec.size()*sizeof(typename T::value_type)));
-    int i=0;
-    for (auto it=data_vec.begin(); it!=data_vec.end(); ++it) {
-      tmp[i]=*it;
-      i++;
+    if (tmp) {
+        int i=0;
+        for (auto it=data_vec.begin(); it!=data_vec.end(); ++it) {
+          tmp[i]=*it;
+          i++;
+        }
+        TinyMATWriter_writeMatrixND_rowmajor(mat, name, tmp, siz, 2);
+        free(tmp);
     }
-    TinyMATWriter_writeMatrixND_rowmajor(mat, name, tmp, siz, 2);
-    free(tmp);
 }
 
 /*! \brief write a 1-dimensional vector/list/... of values as a column-vector into a MAT-file

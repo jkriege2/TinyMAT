@@ -328,8 +328,11 @@ const char *TinyMATWriter_getVersion()
        else if (newsize < 1000 * 1024 * 1024) newsize = newsize * 3 / 2;
        else newsize = newsize * 6 / 5;
      }
-     file->filedata = (uint8_t*)realloc(file->filedata, newsize);
-     file->filedata_size = newsize;
+     auto newMem = (uint8_t*)realloc(file->filedata, newsize);
+     if (newMem) {
+        file->filedata=newMem;
+        file->filedata_size = newsize;
+     }
    }
 #endif
  }
@@ -615,8 +618,10 @@ TINYMAT_inlineattrib static void TinyMAT_writeDatElement_string(TinyMATWriterFil
     std::unique_ptr<int16_t[]> tmp;
     if (slen>0 && data) {
         tmp=std::unique_ptr<int16_t[]>(new int16_t[slen]);
-        for (uint32_t i=0; i<slen; i++) {
-            tmp[i]=data[i];
+        if (tmp) {
+            for (uint32_t i=0; i<slen; i++) {
+                tmp[i]=data[i];
+            }
         }
     }
     uint32_t cla=TINYMAT_miUINT16;
