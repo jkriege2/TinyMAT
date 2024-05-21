@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.10)
 
 set(EXAMPLE_NAME ${PROJECT_NAME}_basic_test)
 

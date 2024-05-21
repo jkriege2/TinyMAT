@@ -16,8 +16,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - {gen: Visual Studio 17 2022, arch: Win32, shared: ON}
-          - {gen: Visual Studio 17 2022, arch: Win32, shared: OFF}
           - {gen: Visual Studio 17 2022, arch: x64, shared: ON}
           - {gen: Visual Studio 17 2022, arch: x64, shared: OFF}
     steps:
