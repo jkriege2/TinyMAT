@@ -6,15 +6,25 @@ This library implements a very simple interface to write Matlab MAT file (level 
 It is licensed under the terms of the GNU Lesser general Public license (LGPL) >=2.1
 
 
-![Language](https://img.shields.io/github/languages/top/jkriege2/TinyMAT)
 [![Lates Release](https://img.shields.io/github/v/release/jkriege2/TinyMAT)](https://github.com/jkriege2/TinyMAT/releases)
-[![Documentation](https://img.shields.io/badge/documentation-online-blue)](http://jkriege2.github.io/TinyMAT/)
 
+![Language](https://img.shields.io/github/languages/top/jkriege2/TinyMAT)
 
-[![CI: Windows Build](https://img.shields.io/appveyor/ci/jkriege2/TinyMAT/master?label=CI%20Windows%20Build)](https://ci.appveyor.com/project/jkriege2/TinyMAT/branch/master) 
-[![CI: Documentation/Linux/MacOX Build](https://img.shields.io/travis/jkriege2/TinyMAT/master?label=CI%3A%20Documentation%2FLinux%2FMacOX%20Build)](https://travis-ci.org/jkriege2/TinyMAT)
+[![Documentation](https://img.shields.io/badge/documentation-online-blue)](http://jkriege2.github.io/TinyMAT/index.html)
 
-[![Code Quality](https://www.code-inspector.com/project/12236/score/svg) ![Code Grade](https://www.code-inspector.com/project/12236/status/svg)](https://frontend.code-inspector.com/public/project/12236/TinyMAT/dashboard)
+[![Last Commit](https://img.shields.io/github/last-commit/jkriege2/TinyMAT)](https://github.com/jkriege2/TinyMAT/pulse)
+[![Contributors](https://img.shields.io/github/contributors/jkriege2/TinyMAT)](https://github.com/jkriege2/TinyMAT/graphs/contributors)
+
+[![Open Issues](https://img.shields.io/github/issues/jkriege2/TinyMAT)](https://github.com/jkriege2/TinyMAT/issues)
+[![Closed Issues](https://img.shields.io/github/issues-closed/jkriege2/TinyMAT)](https://github.com/jkriege2/TinyMAT/issues?q=is%3Aissue+is%3Aclosed)
+
+[![Open PRs](https://img.shields.io/github/issues-pr/jkriege2/TinyMAT)](https://github.com/jkriege2/TinyMAT/pulls)
+[![Closed PRs](https://img.shields.io/github/issues-pr-closed/jkriege2/TinyMAT)](https://github.com/jkriege2/TinyMAT/pulls?q=is%3Apr+is%3Aclosed)
+
+[![BUILD-MSVC-CI](https://github.com/jkriege2/TinyMAT/actions/workflows/build_windows.yml/badge.svg)](https://github.com/jkriege2/TinyMAT/actions/workflows/build_windows.yml)
+[![BUILD-LINUX-CI](https://github.com/jkriege2/TinyMAT/actions/workflows/build_linux.yml/badge.svg)](https://github.com/jkriege2/TinyMAT/actions/workflows/build_linux.yml)
+[![MSVC-CodeAnalysis](https://github.com/jkriege2/TinyMAT/actions/workflows/msvc-codeanalysis.yml/badge.svg)](https://github.com/jkriege2/TinyMAT/actions/workflows/msvc-codeanalysis.yml)
+[![Docu-Build](https://github.com/jkriege2/TinyMAT/actions/workflows/build_docs.yml/badge.svg)](https://github.com/jkriege2/TinyMAT/actions/workflows/build_docs.yml)
 
 # Example
 The following example code writes some arrays and matrices into a MAT-file:
@@ -62,3 +72,10 @@ if (mat) {
 * API documentation: http://jkriege2.github.io/TinyMAT/group__tinymatwriter.html
 * build instructions: http://jkriege2.github.io/TinyMAT/page_buildinstructions.html
 * usage instructions:http://jkriege2.github.io/TinyMAT/page_useinstructions.html
+
+
+
+## Stargazers over time
+
+[![Stargazers over time](https://starchart.cc/jkriege2/TinyMAT.svg)](https://starchart.cc/jkriege2/TinyMAT)
+
