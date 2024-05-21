@@ -21,6 +21,14 @@ jobs:
           - {gen: Unix Makefiles, shared: ON, ccompiler: clang, cxxcompiler: clang++}
           - {gen: Unix Makefiles, shared: OFF, ccompiler: clang, cxxcompiler: clang++}
     steps:
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: '5.15.2'
+    - name: Install OpenCV
+      uses: Dovyski/setup-opencv-action@v1.1
+      with:
+        opencv-version: '4.0.0'    
     - name: checkout
       uses: actions/checkout@v4
     - name: Configure

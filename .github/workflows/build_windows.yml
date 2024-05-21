@@ -21,6 +21,24 @@ jobs:
           - {gen: Visual Studio 17 2022, arch: x64, shared: ON}
           - {gen: Visual Studio 17 2022, arch: x64, shared: OFF}
     steps:
+    - name: Install Qt Win64
+      if: arch=='x64'
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: '5.15.2'
+        host: 'windows'
+        arch: 'win64_msvc2019_64'
+    - name: Install Qt Win64
+      if: arch=='Win32'
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: '5.15.2'
+        host: 'windows'
+        arch: 'win64_msvc2019_32'
+    - name: Install OpenCV
+      uses: Dovyski/setup-opencv-action@v1.1
+      with:
+        opencv-version: '4.0.0'    
     - name: checkout
       uses: actions/checkout@v4
     - name: Configure
