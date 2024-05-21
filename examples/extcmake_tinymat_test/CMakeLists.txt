@@ -3,10 +3,6 @@ cmake_minimum_required(VERSION 3.0)
 
 set(EXAMPLE_NAME extcmake_tinymat_test)
 
-# if you built with CMake and Qt5 support, you also need to include these packages
-find_package(Qt5 COMPONENTS Core REQUIRED)
-find_package(OpenCV)
-
 # now find libTinyMAT
 find_package(libTinyMAT REQUIRED)
 
