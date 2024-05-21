@@ -1730,6 +1730,13 @@ void TinyMATWriter_writeStringVector(TinyMATWriterFile *mat, const char *name, c
 
 
 #ifdef TINYMAT_USES_QVARIANT
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#define TINYMAT_IF_QVARIANTTYPE(data, typ) if (data.typeId()==QVariant::typ)
+#else
+#define TINYMAT_IF_QVARIANTTYPE(data, typ) if (data.type()==QVariant::typ)
+#endif
+
     void TinyMATWriter_writeQVariantList(TinyMATWriterFile *mat, const char *name, const QVariantList &data)
     {
         mat->addStructItemName(name);
@@ -1759,6 +1766,34 @@ void TinyMATWriter_writeStringVector(TinyMATWriterFile *mat, const char *name, c
 
         // write data type
         for (int i=0; i<data.size(); i++) {
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+            if (data[i].canConvert<QString>()) {
+                QByteArray a=data[i].toString().toLatin1();
+                TinyMATWriter_writeString(mat, "", a.data(), a.size());
+            } else if (data[i].canConvert<QVariantMap>()) {
+                QVariantMap a=data[i].toMap();
+                TinyMATWriter_writeQVariantMap(mat, "", a);
+            } else if (data[i].canConvert<QVariantList>()) {
+                QVariantList a=data[i].toList();
+                //std::cout<<i<<" "<<j<<" "<<QString(a).toStdString()<<"  length="<<a.size()<<"\n";
+                TinyMATWriter_writeQVariantList(mat, "", a);
+
+            } else if (data[i].canConvert<double>()) {
+                double a=data[i].toDouble();
+                TinyMATWriter_writeMatrix2D_colmajor(mat, "", &a, 1, 1);
+            } else if (data[i].canConvert<QPointF>()) {
+                double a[2]={data[i].toPointF().x(), data[i].toPointF().y()};
+                TinyMATWriter_writeMatrix2D_colmajor(mat, "", a, 1, 2);
+            } else if (data[i].canConvert<QPoint>()) {
+                double a[2]={(double)data[i].toPoint().x(), (double)data[i].toPoint().y()};
+                TinyMATWriter_writeMatrix2D_colmajor(mat, "", a, 1, 2);
+            } else if (data[i].canConvert<QSizeF>()) {
+                double a[2]={data[i].toSizeF().width(), data[i].toSizeF().height()};
+                TinyMATWriter_writeMatrix2D_colmajor(mat, "", a, 1, 2);
+            } else if (data[i].canConvert<QSize>()) {
+                double a[2]={(double)data[i].toSize().width(), (double)data[i].toSize().height()};
+                TinyMATWriter_writeMatrix2D_colmajor(mat, "", a, 1, 2);
+#else
             if (data[i].type()==QVariant::String) {
                 QByteArray a=data[i].toString().toLatin1();
                 TinyMATWriter_writeString(mat, "", a.data(), a.size());
@@ -1788,6 +1823,7 @@ void TinyMATWriter_writeStringVector(TinyMATWriterFile *mat, const char *name, c
             } else if (data[i].canConvert(QVariant::String)) {
                 QByteArray a=data[i].toString().toLatin1();
                 TinyMATWriter_writeString(mat, "", a.data(), a.size());
+#endif
             } else {
                 TinyMATWriter_writeMatrix2D_colmajor<double>(mat, "", NULL, 0, 0);
             }
@@ -1876,7 +1912,38 @@ void TinyMATWriter_writeStringVector(TinyMATWriterFile *mat, const char *name, c
                 if (j<data[i].size()) {
                     v=data[i].operator[](j);
                 }
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
                 //std::cout<<"+++ "<<i<<"/"<<j<<":   "<<TinyMAT_ftell(mat)<<" "<<(TinyMAT_ftell(mat)%8)<<"  write '"<<v.toString().toStdString()<<"'\n";
+                if (v.canConvert<QString>()) {
+                    const QByteArray a=v.toString().toLatin1();
+                    //std::cout<<i<<" "<<j<<" "<<QString(a).toStdString()<<"  length="<<a.size()<<"\n";
+                    TinyMATWriter_writeString(mat, "", a.data(), a.size());
+                } else if (v.canConvert<QVariantMap>()) {
+                    const QVariantMap a=v.toMap();
+                    TinyMATWriter_writeQVariantMap(mat, "", a);
+
+                } else if (v.canConvert<QVariantList>()) {
+                    const QVariantList a=v.toList();
+                    //std::cout<<i<<" "<<j<<" "<<QString(a).toStdString()<<"  length="<<a.size()<<"\n";
+                    TinyMATWriter_writeQVariantList(mat, "", a);
+                } else if (v.canConvert<double>()) {
+                    const double a=v.toDouble();
+                    //std::cout<<i<<" "<<j<<" "<<a<<"\n";
+                    TinyMATWriter_writeMatrix2D_colmajor(mat, "", &a, 1, 1);
+                } else if (v.canConvert<QPointF>()) {
+                    const double a[2]={v.toPointF().x(), v.toPointF().y()};
+                    TinyMATWriter_writeMatrix2D_colmajor(mat, "", a, 1, 2);
+                } else if (v.canConvert<QPoint>()) {
+                    const double a[2]={(double)v.toPoint().x(), (double)v.toPoint().y()};
+                    TinyMATWriter_writeMatrix2D_colmajor(mat, "", a, 1, 2);
+                } else if (v.canConvert<QSizeF>()) {
+                    const double a[2]={v.toSizeF().width(), v.toSizeF().height()};
+                    TinyMATWriter_writeMatrix2D_colmajor(mat, "", a, 1, 2);
+                } else if (v.canConvert<QSize>()) {
+                    const double a[2]={(double)v.toSize().width(), (double)v.toSize().height()};
+                    TinyMATWriter_writeMatrix2D_colmajor(mat, "", a, 1, 2);
+#else \
+        //std::cout<<"+++ "<<i<<"/"<<j<<":   "<<TinyMAT_ftell(mat)<<" "<<(TinyMAT_ftell(mat)%8)<<"  write '"<<v.toString().toStdString()<<"'\n";
                 if (v.type()==QVariant::String) {
                     QByteArray a=v.toString().toLatin1();
                     //std::cout<<i<<" "<<j<<" "<<QString(a).toStdString()<<"  length="<<a.size()<<"\n";
@@ -1908,6 +1975,7 @@ void TinyMATWriter_writeStringVector(TinyMATWriterFile *mat, const char *name, c
                 } else if (v.canConvert(QVariant::String)) {
                     QByteArray a=v.toString().toLatin1();
                     TinyMATWriter_writeString(mat, "", a.data(), a.size());
+#endif
                 } else {
                     //std::cout<<i<<" "<<j<<" "<<"EMPTY"<<"\n";
                     TinyMATWriter_writeMatrix2D_colmajor<double>(mat, "", NULL, 0, 0);
@@ -1989,17 +2057,53 @@ void TinyMATWriter_writeStringVector(TinyMATWriterFile *mat, const char *name, c
             QVariant v=i.value();
             QString n=i.key();
 
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+                //std::cout<<"+++ "<<i<<"/"<<j<<":   "<<TinyMAT_ftell(mat)<<" "<<(TinyMAT_ftell(mat)%8)<<"  write '"<<v.toString().toStdString()<<"'\n";
+            if (v.canConvert<QString>()) {
+                const QByteArray a=v.toString().toLatin1();
+                //std::cout<<i<<" "<<j<<" "<<QString(a).toStdString()<<"  length="<<a.size()<<"\n";
+                TinyMATWriter_writeString(mat, "", a.data(), a.size());
+            } else if (v.canConvert<QVariantMap>()) {
+                const QVariantMap a=v.toMap();
+                TinyMATWriter_writeQVariantMap(mat, "", a);
+
+            } else if (v.canConvert<QVariantList>()) {
+                const QVariantList a=v.toList();
+                //std::cout<<i<<" "<<j<<" "<<QString(a).toStdString()<<"  length="<<a.size()<<"\n";
+                TinyMATWriter_writeQVariantList(mat, "", a);
+            } else if (v.canConvert<double>()) {
+                const double a=v.toDouble();
+                //std::cout<<i<<" "<<j<<" "<<a<<"\n";
+                TinyMATWriter_writeMatrix2D_colmajor(mat, "", &a, 1, 1);
+            } else if (v.canConvert<QPointF>()) {
+                const double a[2]={v.toPointF().x(), v.toPointF().y()};
+                TinyMATWriter_writeMatrix2D_colmajor(mat, "", a, 1, 2);
+            } else if (v.canConvert<QPoint>()) {
+                const double a[2]={(double)v.toPoint().x(), (double)v.toPoint().y()};
+                TinyMATWriter_writeMatrix2D_colmajor(mat, "", a, 1, 2);
+            } else if (v.canConvert<QSizeF>()) {
+                const double a[2]={v.toSizeF().width(), v.toSizeF().height()};
+                TinyMATWriter_writeMatrix2D_colmajor(mat, "", a, 1, 2);
+            } else if (v.canConvert<QSize>()) {
+                const double a[2]={(double)v.toSize().width(), (double)v.toSize().height()};
+                TinyMATWriter_writeMatrix2D_colmajor(mat, "", a, 1, 2);
+#else
+        //std::cout<<"+++ "<<i<<"/"<<j<<":   "<<TinyMAT_ftell(mat)<<" "<<(TinyMAT_ftell(mat)%8)<<"  write '"<<v.toString().toStdString()<<"'\n";
             if (v.type()==QVariant::String) {
                 QByteArray a=v.toString().toLatin1();
+                //std::cout<<i<<" "<<j<<" "<<QString(a).toStdString()<<"  length="<<a.size()<<"\n";
                 TinyMATWriter_writeString(mat, "", a.data(), a.size());
-            } else if (v.type()==QVariant::List) {
-                QVariantList a=v.toList();
-                TinyMATWriter_writeQVariantList(mat, "", a);
             } else if (v.type()==QVariant::Map) {
                 QVariantMap a=v.toMap();
                 TinyMATWriter_writeQVariantMap(mat, "", a);
+
+            } else if (v.type()==QVariant::List) {
+                QVariantList a=v.toList();
+                //std::cout<<i<<" "<<j<<" "<<QString(a).toStdString()<<"  length="<<a.size()<<"\n";
+                TinyMATWriter_writeQVariantList(mat, "", a);
             } else if (v.canConvert(QVariant::Double)) {
                 double a=v.toDouble();
+                //std::cout<<i<<" "<<j<<" "<<a<<"\n";
                 TinyMATWriter_writeMatrix2D_colmajor(mat, "", &a, 1, 1);
             } else if (v.canConvert(QVariant::PointF)) {
                 double a[2]={v.toPointF().x(), v.toPointF().y()};
@@ -2016,6 +2120,7 @@ void TinyMATWriter_writeStringVector(TinyMATWriterFile *mat, const char *name, c
             } else if (v.canConvert(QVariant::String)) {
                 QByteArray a=v.toString().toLatin1();
                 TinyMATWriter_writeString(mat, "", a.data(), a.size());
+#endif
             } else {
                 TinyMATWriter_writeMatrix2D_colmajor<double>(mat, "", NULL, 0, 0);
             }
